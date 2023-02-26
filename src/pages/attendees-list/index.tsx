@@ -17,6 +17,14 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
     form.setFieldValue('email', email);
   };
 
+  const handleClickConfirm = async () => {
+    const { email } = await form.validateFields();
+    router.push({
+      pathname: '/attendee-detail',
+      query: { email },
+    });
+  };
+
   return (
     <div className={styles.app}>
       <div className={styles.body}>
@@ -43,7 +51,7 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
             </Form>
           </Card>
 
-          <List header="Attendees list" mode="card" style={{ margin: '12px 0px' }}>
+          <List header="Attendees list" mode="card" style={{ margin: '12px 0px 36px 0px' }}>
             {ATTENDEES.map((item) => {
               return (
                 <List.Item
@@ -51,7 +59,7 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
                     <UserContactOutline width={32} height={32} color="var(--adm-color-primary)" />
                   }
                   key={item.email}
-                  description={item.description}
+                  description={item.role}
                   onClick={() => handleSelectAttendee(item)}
                 >
                   {item.name}
@@ -62,12 +70,11 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
               <span>--- No more ---</span>
             </InfiniteScroll>
           </List>
+
+          <Button block color="primary" size="large" onClick={handleClickConfirm}>
+            Confirm
+          </Button>
         </div>
-      </div>
-      <div>
-        <Button block color="primary" size="large">
-          Confirm
-        </Button>
       </div>
     </div>
   );

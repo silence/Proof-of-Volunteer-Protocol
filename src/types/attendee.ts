@@ -1,5 +1,6 @@
 export interface Attendee {
   name: string;
-  description: string;
+  role: string;
   email: string;
+  introduction?: string;
 }
