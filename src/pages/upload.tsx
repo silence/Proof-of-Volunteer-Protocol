@@ -2,10 +2,20 @@ import { useState } from 'react'
 
 import { convertBase64, postData } from '@/util'
 import { Button } from '@mui/material'
-import { Button as ButtonAnt } from 'antd-mobile'
+import { Button as ButtonAnt, ImageUploader } from 'antd-mobile'
+
+export async function mockUpload(file: File) {
+  await new Promise((resolve) => {
+    window.setTimeout(resolve, 3000)
+  })
+  return {
+    url: URL.createObjectURL(file)
+  }
+}
 
 function Upload() {
   const [files, setFiles] = useState([])
+  const [fileList, setFileList] = useState([])
 
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
@@ -45,6 +55,12 @@ function Upload() {
           onChange={(e) => uploadImage(e)}
         />
       </ButtonAnt>
+
+      <ImageUploader
+        value={fileList}
+        onChange={setFileList}
+        upload={mockUpload}
+      />
 
       {/* <FilePond
         files={files}
