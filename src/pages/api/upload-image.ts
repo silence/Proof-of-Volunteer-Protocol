@@ -12,7 +12,7 @@ function submitImage(imageData: string, imageType: string) {
   const data = Buffer.from(imageData)
   const contentType = 'image/' + imageType
   const tags = { fileType: 'image', imageType: imageType }
-  // return submitByApikey(arseedingUrl, apikey, data, contentType, tags)
+  return submitByApikey(arseedingUrl, apikey, data, contentType, tags)
 }
 
 const post = (req: NextApiRequest, res: NextApiResponse<Data>) => {
