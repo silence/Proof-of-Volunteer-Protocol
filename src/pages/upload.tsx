@@ -1,20 +1,34 @@
-import { convertBase64, postData } from '@/util'
-import { Button as ButtonAnt } from 'antd-mobile'
+import { useState } from 'react';
+
+import { convertBase64, postData } from '@/util';
+import { Button as ButtonAnt, ImageUploader } from 'antd-mobile';
+
+export async function mockUpload(file: File) {
+  await new Promise((resolve) => {
+    window.setTimeout(resolve, 3000);
+  });
+  return {
+    url: URL.createObjectURL(file)
+  };
+}
 
 function Upload() {
+  const [files, setFiles] = useState([]);
+  const [fileList, setFileList] = useState([]);
+
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const file = event.target.files[0]
-      const base64 = (await convertBase64(file)) as string
+      const file = event.target.files[0];
+      const base64 = (await convertBase64(file)) as string;
       try {
         postData('/api/upload-image', { base64, fileName: file.name }).then((res) => {
-          console.log('res', res)
-        })
+          console.log('res', res);
+        });
       } catch (error) {
-        console.log('error: ', error)
+        console.log('error: ', error);
       }
     }
-  }
+  };
 
   return (
     <div className="App">
@@ -29,6 +43,12 @@ function Upload() {
           onChange={(e) => uploadImage(e)}
         />
       </ButtonAnt>
+
+      <ImageUploader
+        value={fileList}
+        onChange={setFileList}
+        upload={mockUpload}
+      />
 
       {/* <FilePond
         files={files}
@@ -51,7 +71,7 @@ function Upload() {
         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
       /> */}
     </div>
-  )
+  );
 }
 
-export default Upload
+export default Upload;

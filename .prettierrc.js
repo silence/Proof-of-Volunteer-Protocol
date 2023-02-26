@@ -1,8 +1,8 @@
 module.exports = {
   tabWidth: 2,
-  printWidth: 88,
+  printWidth: 100,
   singleAttributePerLine: true,
   singleQuote: true,
-  semi: false,
+  semi: true,
   trailingComma: "none" // Will be the default in Prettier 3.0
 };
