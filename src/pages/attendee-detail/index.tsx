@@ -1,47 +1,22 @@
-import React, { useEffect, useState } from 'react'
-import { Card, NoticeBar, Space, Tag } from 'antd-mobile'
-import styles from '@/styles/common.module.css'
-import { useRouter } from 'next/router'
-import { ATTENDEES } from '@/json/attendees'
-import { Attendee } from '@/types/attendee'
-import { convertBase64, postData } from '@/util'
-import { Button } from '@mui/material'
+import React, { useEffect, useReducer, useState } from 'react';
+import { Card, Button, Space } from 'antd-mobile';
+import styles from '@/styles/common.module.css';
+import { useRouter } from 'next/router';
+import { ATTENDEES } from '@/json/attendees';
+import { Attendee } from '@/types/attendee';
 
 export interface AttendeeDetailProps {}
 
 const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
-  const router = useRouter()
+  const router = useRouter();
 
-  const [attendee, setAttendee] = useState<Attendee>()
+  const [attendee, setAttendee] = useState<Attendee>();
 
-  const [uploadErr, setUploadErr] = useState<boolean>(false)
-  const [fileName, setFileName] = useState<string>()
-
-  const { email } = router.query
+  const { email } = router.query;
 
   useEffect(() => {
-    setAttendee(ATTENDEES.find((item) => item.email === email))
-  }, [email])
-
-  const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
-    setUploadErr(false)
-    if (event.target.files) {
-      const file = event.target.files[0]
-      const base64 = (await convertBase64(file)) as string
-      if (base64.match(/data:image\/(jpeg|jpg|png);base64/g)) {
-        try {
-          setFileName(file.name)
-          postData('/api/upload-image', { base64, fileName: file.name }).then((res) => {
-            console.log('res', res)
-          })
-        } catch (error) {
-          console.log('error: ', error)
-        }
-      } else {
-        setUploadErr(true)
-      }
-    }
-  }
+    setAttendee(ATTENDEES.find((item) => item.email === email));
+  }, [email]);
 
   return (
     <div className={styles.app}>
@@ -66,27 +41,16 @@ const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
           </Card>
 
           <Button
-            variant="contained"
-            component="label"
+            size="large"
+            shape="rounded"
+            color="primary"
           >
-            Upload File
-            <input
-              type="file"
-              hidden
-              onChange={(e) => uploadImage(e)}
-            />
+            Take a joint picture to remember such a moment
           </Button>
-          {fileName && <Tag>File: {fileName}</Tag>}
-          {uploadErr && (
-            <NoticeBar
-              content="Only Image type: jgeg, jpg, png"
-              color="error"
-            />
-          )}
         </Space>
       </div>
     </div>
-  )
-}
+  );
+};
 
-export default AttendeeDetail
+export default AttendeeDetail;
