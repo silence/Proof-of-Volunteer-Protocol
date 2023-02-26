@@ -1,12 +1,7 @@
-import { useState } from 'react'
-
 import { convertBase64, postData } from '@/util'
-import { Button } from '@mui/material'
 import { Button as ButtonAnt } from 'antd-mobile'
 
 function Upload() {
-  const [files, setFiles] = useState([])
-
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
       const file = event.target.files[0]
@@ -23,17 +18,6 @@ function Upload() {
 
   return (
     <div className="App">
-      <Button
-        variant="contained"
-        component="label"
-      >
-        Upload File
-        <input
-          type="file"
-          hidden
-          onChange={uploadImage}
-        />
-      </Button>
       <ButtonAnt
         color="primary"
         fill="solid"
