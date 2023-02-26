@@ -6,7 +6,8 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "prepare": "husky install"
   },
   "dependencies": {
     "@next/font": "13.1.6",
@@ -17,7 +18,6 @@
     "@web3modal/ethereum": "^2.1.1",
     "@web3modal/react": "^2.1.1",
     "antd-mobile": "^5.28.0",
-    "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "ethers": "^5.7.2",
     "next": "13.1.6",
@@ -28,5 +28,12 @@
     "walletlink": "^2.5.0",
     "web3": "^1.8.2",
     "web3modal": "^1.9.12"
+  },
+  "devDependencies": {
+    "eslint-config-prettier": "^8.6.0",
+    "eslint-plugin-prettier": "^4.2.1",
+    "husky": "^8.0.3",
+    "lint-staged": "^13.1.2",
+    "prettier": "^2.8.4"
   }
 }
