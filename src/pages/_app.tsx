@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum';
 import { Web3Modal } from '@web3modal/react';
 import type { AppProps } from 'next/app';
+import '@/styles/globals.css';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
 import { arbitrum, avalanche, bsc, fantom, gnosis, mainnet, optimism, polygon } from 'wagmi/chains';
 

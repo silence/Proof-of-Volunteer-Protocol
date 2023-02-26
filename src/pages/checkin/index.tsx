@@ -1,29 +1,52 @@
 import React from 'react';
-import { NoticeBar, Space, Input, Form, Button } from 'antd-mobile';
+import { NoticeBar, Space, Input, Form, Button, Result, Card } from 'antd-mobile';
+import { SmileOutline } from 'antd-mobile-icons';
+import { useRouter } from 'next/router';
+import styles from '@/styles/common.module.css';
 
 export interface CheckInPageProps {}
 
 const CheckInPage: React.FC<CheckInPageProps> = (props) => {
+  const [form] = Form.useForm();
+  const router = useRouter();
+
+  const handleSubmit = async () => {
+    const { email } = await form.validateFields();
+    router.push({ pathname: '/welcome', query: { email } }, '/welcome');
+  };
+
   return (
-    <div style={{ height: '100vh', display: 'flex', alignItems: 'center' }}>
-      <div style={{ flex: 1, paddingBottom: '60px' }}>
-        <Space direction="vertical" style={{ '--gap': '48px' }}>
-          <NoticeBar
-            wrap
-            content="Use the email you registered to check-in and meet other attendees"
-            color="info"
-          />
+    <div className={styles.app}>
+      <div className={styles.body}>
+        <Card>
+          <Space direction="vertical" style={{ '--gap': '16px' }}>
+            <Result
+              icon={<SmileOutline />}
+              status="success"
+              title="Use the email you registered to check-in and meet other attendees"
+            />
 
-          <Form layout="horizontal">
-            <Form.Item label="" name="email">
-              <Input placeholder="Input Email" clearable />
-            </Form.Item>
-          </Form>
+            <Form layout="horizontal" form={form}>
+              <Form.Item
+                label=""
+                name="email"
+                validateTrigger="onBlur"
+                rules={[
+                  { required: true, message: 'Please input' },
+                  { type: 'email', message: 'Invalid email' },
+                ]}
+              >
+                <Input placeholder="Input Email" clearable />
+              </Form.Item>
+            </Form>
+          </Space>
+        </Card>
+      </div>
 
-          <Button block color="primary">
-            Check-in
-          </Button>
-        </Space>
+      <div className={styles.bottom}>
+        <Button block color="primary" onClick={handleSubmit} size="large">
+          Check-in
+        </Button>
       </div>
     </div>
   );
