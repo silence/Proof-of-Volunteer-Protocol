@@ -1,16 +1,16 @@
 export const convertBase64 = (file: Blob) =>
   new Promise((resolve, reject) => {
-    const fileReader = new FileReader()
-    fileReader.readAsDataURL(file)
+    const fileReader = new FileReader();
+    fileReader.readAsDataURL(file);
 
     fileReader.onload = () => {
-      resolve(fileReader.result)
-    }
+      resolve(fileReader.result);
+    };
 
     fileReader.onerror = (error) => {
-      reject(error)
-    }
-  })
+      reject(error);
+    };
+  });
 
 export async function postData(url: string, data: any) {
   const response = await fetch(url, {
@@ -21,8 +21,8 @@ export async function postData(url: string, data: any) {
       'Content-Type': 'application/json',
       Accept: 'application/json'
     })
-  })
+  });
 
-  const json = await response.json()
-  return json
+  const json = await response.json();
+  return json;
 }

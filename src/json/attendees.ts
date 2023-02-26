@@ -1,4 +1,4 @@
-import { Attendee } from '@/types/attendee'
+import { Attendee } from '@/types/attendee';
 
 export const ATTENDEES: Attendee[] = [
   {
@@ -21,4 +21,4 @@ export const ATTENDEES: Attendee[] = [
     role: '投研公会',
     email: 'xueey.wang@gmail.com'
   }
-]
+];
