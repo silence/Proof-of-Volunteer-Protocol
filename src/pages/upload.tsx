@@ -1,65 +1,51 @@
-import { useState } from "react";
-// Import React FilePond
-// import { FilePond } from "react-filepond";
+import { useState } from 'react'
 
-// Import FilePond styles
-// import "filepond/dist/filepond.min.css";
-import { Button } from "@mui/material";
-
-const convertBase64 = (file: Blob) =>
-  new Promise((resolve, reject) => {
-    const fileReader = new FileReader();
-    fileReader.readAsDataURL(file);
-
-    fileReader.onload = () => {
-      resolve(fileReader.result);
-    };
-
-    fileReader.onerror = (error) => {
-      reject(error);
-    };
-  });
-
-async function postData(url = "", data = {}) {
-  const response = await fetch(url, {
-    method: "POST",
-    mode: "cors",
-    body: JSON.stringify(data),
-    headers: new Headers({
-      'Content-Type': 'application/json',
-      Accept: 'application/json',
-    }),
-  });
-
-  const json = await response.json();
-  return json;
-}
+import { convertBase64, postData } from '@/util'
+import { Button } from '@mui/material'
+import { Button as ButtonAnt } from 'antd-mobile'
 
 function Upload() {
-  const [files, setFiles] = useState([]);
+  const [files, setFiles] = useState([])
 
   const uploadImage = async (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.files) {
-      const file = event.target.files[0];
-      const base64 = (await convertBase64(file)) as string;
+      const file = event.target.files[0]
+      const base64 = (await convertBase64(file)) as string
       try {
-        postData("/api/upload-image", { base64, fileName: file.name }).then(
-          (res) => {
-            console.log("res", res);
-          }
-        );
+        postData('/api/upload-image', { base64, fileName: file.name }).then((res) => {
+          console.log('res', res)
+        })
       } catch (error) {
-        console.log("error: ", error);
+        console.log('error: ', error)
       }
     }
-  };
+  }
 
   return (
     <div className="App">
-      <Button variant="contained" component="label">
+      <Button
+        variant="contained"
+        component="label"
+      >
         Upload File
-        <input type="file" hidden onChange={uploadImage} />
+        <input
+          type="file"
+          hidden
+          onChange={uploadImage}
+        />
       </Button>
+      <ButtonAnt
+        color="primary"
+        fill="solid"
+      >
+        Upload File
+        <input
+          type="file"
+          hidden
+          onChange={(e) => uploadImage(e)}
+        />
+      </ButtonAnt>
+
       {/* <FilePond
         files={files}
         // oninitfile={(file) => {
@@ -81,7 +67,7 @@ function Upload() {
         labelIdle='Drag & Drop your files or <span class="filepond--label-action">Browse</span>'
       /> */}
     </div>
-  );
+  )
 }
 
-export default Upload;
+export default Upload
