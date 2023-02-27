@@ -1,5 +1,15 @@
-import React from 'react';
-import { Space, Result, Form, Input, List, Card, InfiniteScroll, Button } from 'antd-mobile';
+import React, { useState } from 'react';
+import {
+  Space,
+  Result,
+  Form,
+  Input,
+  List,
+  Card,
+  InfiniteScroll,
+  Button,
+  Dialog
+} from 'antd-mobile';
 import { useRouter } from 'next/router';
 import { SmileOutline, UserContactOutline } from 'antd-mobile-icons';
 import { Attendee } from '@/types/attendee';
@@ -11,18 +21,29 @@ export interface AttendeesListProps {}
 const AttendeesList: React.FC<AttendeesListProps> = (props) => {
   const router = useRouter();
   const [form] = Form.useForm();
+  const [searchKey, setSearchKey] = useState('');
 
-  const handleSelectAttendee = (item: Attendee) => {
-    const { email } = item;
-    form.setFieldValue('email', email);
+  const handleSelectAttendee = async (item: Attendee) => {
+    const result = await Dialog.confirm({
+      content: (
+        <span>
+          You have selected <b>{item.name}</b>
+        </span>
+      ),
+      cancelText: 'Cancel',
+      confirmText: 'Confirm'
+    });
+    if (result) {
+      router.push({
+        pathname: '/attendee-detail',
+        query: { email: item.email }
+      });
+    }
   };
 
-  const handleClickConfirm = async () => {
-    const { email } = await form.validateFields();
-    router.push({
-      pathname: '/attendee-detail',
-      query: { email }
-    });
+  const handleSearch = (changedValues: { name: string }) => {
+    const { name } = changedValues;
+    setSearchKey(name);
   };
 
   return (
@@ -40,40 +61,38 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
               }
             />
 
-            <Form form={form}>
-              <Form.Item
-                label="Email"
-                name="email"
-                rules={[{ required: true }, { type: 'email', message: 'Invalid email' }]}
-              >
+            <Form form={form} onValuesChange={handleSearch}>
+              <Form.Item label="Email" name="name">
                 <Input placeholder="Input email or select attendee from below"></Input>
               </Form.Item>
             </Form>
           </Card>
 
           <List header="Attendees list" mode="card" style={{ margin: '12px 0px 36px 0px' }}>
-            {ATTENDEES.map((item) => {
-              return (
-                <List.Item
-                  prefix={
-                    <UserContactOutline width={32} height={32} color="var(--adm-color-primary)" />
-                  }
-                  key={item.email}
-                  description={item.role}
-                  onClick={() => handleSelectAttendee(item)}
-                >
-                  {item.name}
-                </List.Item>
-              );
-            })}
-            <InfiniteScroll loadMore={async () => {}} hasMore={false}>
-              <span>--- No more ---</span>
-            </InfiniteScroll>
+            <div style={{ minHeight: '332px' }}>
+              {ATTENDEES.filter(
+                (item) =>
+                  !searchKey ||
+                  item.name.toLowerCase().trim().includes(searchKey.toLowerCase().trim())
+              ).map((item) => {
+                return (
+                  <List.Item
+                    prefix={
+                      <UserContactOutline width={32} height={32} color="var(--adm-color-primary)" />
+                    }
+                    key={item.email}
+                    description={item.role}
+                    onClick={() => handleSelectAttendee(item)}
+                  >
+                    {item.name}
+                  </List.Item>
+                );
+              })}
+              <InfiniteScroll loadMore={async () => {}} hasMore={false}>
+                <span>--- No more ---</span>
+              </InfiniteScroll>
+            </div>
           </List>
-
-          <Button block color="primary" size="large" onClick={handleClickConfirm}>
-            Confirm
-          </Button>
         </div>
       </div>
     </div>

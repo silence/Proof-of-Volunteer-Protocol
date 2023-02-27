@@ -18,7 +18,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
       const formData = new FormData();
       formData.append('imageFile', file, file.name);
-      postData('/api/upload-image', formData)
+      await postData('/api/upload-image', formData)
         .then((res) => {
           console.log('res', res);
         })
@@ -59,18 +59,20 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
             upload={handleUpload}
             capture
             maxCount={1}
-            style={{ '--cell-size': '120px' }}
+            style={{ '--cell-size': '240px' }}
             onDelete={() => {
               return Dialog.confirm({
-                content: 'Are you sure to remove this photo?'
+                content: 'Are you sure to remove this photo?',
+                cancelText: 'Cancel',
+                confirmText: 'Confirm'
               });
             }}
           >
             <div
               style={{
-                width: 120,
-                height: 120,
-                borderRadius: 40,
+                width: 240,
+                height: 240,
+                borderRadius: 80,
                 backgroundColor: '#f5f5f5',
                 display: 'flex',
                 justifyContent: 'center',
@@ -78,7 +80,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
                 color: '#999999'
               }}
             >
-              <CameraOutline style={{ fontSize: 48 }} />
+              <CameraOutline style={{ fontSize: 96 }} />
             </div>
           </ImageUploader>
           {showWarning && <Tag>Only types: {AllowedImageTypes.join(', ')} are allowed</Tag>}
