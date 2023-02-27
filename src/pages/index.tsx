@@ -4,11 +4,7 @@ export default function HomePage() {
   return (
     <div>
       {/* Predefined button  */}
-      <Web3Button
-        icon="show"
-        label="Connect Wallet"
-        balance="show"
-      />
+      <Web3Button icon="show" label="Connect Wallet" balance="show" />
       <br />
 
       {/* Network Switcher Button */}

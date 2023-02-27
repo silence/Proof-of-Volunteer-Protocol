@@ -83,10 +83,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           </ImageUploader>
           {showWarning && <Tag>Only types: {AllowedImageTypes.join(', ')} are allowed</Tag>}
         </div>
-        <Link
-          href="/mint"
-          style={{ fontSize: '18px', textDecorationLine: 'underline' }}
-        >
+        <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
           Skip first
         </Link>
       </div>
