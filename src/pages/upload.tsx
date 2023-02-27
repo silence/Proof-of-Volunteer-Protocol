@@ -46,7 +46,7 @@ function Upload() {
 
       <ImageUploader
         value={fileList}
-        onChange={setFileList}
+        // onChange={setFileList}
         upload={mockUpload}
       />
 
