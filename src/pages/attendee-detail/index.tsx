@@ -46,14 +46,8 @@ const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        <Space
-          direction="vertical"
-          style={{ '--gap': '20px' }}
-        >
-          <Card
-            title={attendee?.name}
-            style={{ width: '100%', fontSize: '18px' }}
-          >
+        <Space direction="vertical" style={{ '--gap': '20px' }}>
+          <Card title={attendee?.name} style={{ width: '100%', fontSize: '18px' }}>
             <div>
               <b>DAO role:</b>
               <p>{attendee?.role}</p>

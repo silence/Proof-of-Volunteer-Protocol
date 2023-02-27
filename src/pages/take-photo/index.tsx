@@ -8,28 +8,14 @@ import { convertBase64, postData } from '@/util';
 export interface TakePhotoPageProps {}
 
 const TakePhotoPage: React.FC<TakePhotoPageProps> = (props) => {
-  // const handleUpload = (file: File) => {
-  //   console.log('file', file);
-
-  //   return Promise.resolve({
-  //     key: '',
-  //     url: 'string',
-  //     thumbnailUrl: 'string',
-  //     extra: ''
-  //   });
-  // };
-
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     const base64 = (await convertBase64(file)) as string;
     if (base64.match(/data:image\/(jpeg|jpg|png);base64/g)) {
-      try {
-        postData('/api/upload-image', { base64, fileName: file.name }).then((res) => {
-          console.log('res', res);
-        });
-      } catch (error) {
-        console.log('error: ', error);
-      }
+      postData('/api/upload-image', { base64, fileName: file.name }).then((res) => {
+        console.log('res', res);
+      });
     } else {
+      throw new Error('Invalid image');
     }
     return {
       url: URL.createObjectURL(file)
@@ -76,10 +62,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = (props) => {
           </ImageUploader>
         </div>
 
-        <Link
-          href="/mint"
-          style={{ fontSize: '18px', textDecorationLine: 'underline' }}
-        >
+        <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
           Skip first
         </Link>
       </div>

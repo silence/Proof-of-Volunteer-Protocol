@@ -32,16 +32,9 @@ function Upload() {
 
   return (
     <div className="App">
-      <ButtonAnt
-        color="primary"
-        fill="solid"
-      >
+      <ButtonAnt color="primary" fill="solid">
         Upload File
-        <input
-          type="file"
-          hidden
-          onChange={(e) => uploadImage(e)}
-        />
+        <input type="file" hidden onChange={(e) => uploadImage(e)} />
       </ButtonAnt>
 
       <ImageUploader

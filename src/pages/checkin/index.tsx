@@ -18,25 +18,16 @@ const CheckInPage: React.FC<CheckInPageProps> = (props) => {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        <Space
-          direction="vertical"
-          style={{ '--gap': '20px' }}
-        >
+        <Space direction="vertical" style={{ '--gap': '20px' }}>
           <Card>
-            <Space
-              direction="vertical"
-              style={{ '--gap': '16px' }}
-            >
+            <Space direction="vertical" style={{ '--gap': '16px' }}>
               <Result
                 icon={<SmileOutline />}
                 status="success"
                 title="Use the email you registered to check-in and meet other attendees"
               />
 
-              <Form
-                layout="horizontal"
-                form={form}
-              >
+              <Form layout="horizontal" form={form}>
                 <Form.Item
                   label=""
                   name="email"
@@ -46,20 +37,12 @@ const CheckInPage: React.FC<CheckInPageProps> = (props) => {
                     { type: 'email', message: 'Invalid email' }
                   ]}
                 >
-                  <Input
-                    placeholder="Input Email"
-                    clearable
-                  />
+                  <Input placeholder="Input Email" clearable />
                 </Form.Item>
               </Form>
             </Space>
           </Card>
-          <Button
-            block
-            color="primary"
-            onClick={handleSubmit}
-            size="large"
-          >
+          <Button block color="primary" onClick={handleSubmit} size="large">
             Check-in
           </Button>
         </Space>
