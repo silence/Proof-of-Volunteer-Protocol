@@ -1,35 +1,33 @@
-import React from 'react';
-import { Card, Result, ImageUploader, ImageUploadItem, Dialog } from 'antd-mobile';
+import React, { useState } from 'react';
+import { Card, Result, ImageUploader, ImageUploadItem, Dialog, Tag } from 'antd-mobile';
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
 import Link from 'next/link';
-import { convertBase64, postData } from '@/util';
+import { postData } from '@/util';
 
 export interface TakePhotoPageProps {}
 
-const TakePhotoPage: React.FC<TakePhotoPageProps> = (props) => {
-  // const handleUpload = (file: File) => {
-  //   console.log('file', file);
+const AllowedImageTypes = ['jpeg', 'png', 'gif'];
 
-  //   return Promise.resolve({
-  //     key: '',
-  //     url: 'string',
-  //     thumbnailUrl: 'string',
-  //     extra: ''
-  //   });
-  // };
+const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
+  const [err, setErr] = useState<string>();
+  const [showWarning, setShowWarning] = useState<boolean>(false);
 
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
-    const base64 = (await convertBase64(file)) as string;
-    if (base64.match(/data:image\/(jpeg|jpg|png);base64/g)) {
-      try {
-        postData('/api/upload-image', { base64, fileName: file.name }).then((res) => {
+    setShowWarning(false);
+    if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
+      const formData = new FormData();
+      formData.append('imageFile', file, file.name);
+      postData('/api/upload-image', formData)
+        .then((res) => {
           console.log('res', res);
+        })
+        .catch((error) => {
+          console.log('error: ', error);
+          setErr(error.message);
         });
-      } catch (error) {
-        console.log('error: ', error);
-      }
     } else {
+      setShowWarning(true);
     }
     return {
       url: URL.createObjectURL(file)
@@ -47,7 +45,16 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = (props) => {
           />
         </Card>
 
-        <div style={{ width: '100%', display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            width: '100%',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            flexDirection: 'column',
+            gap: '20px'
+          }}
+        >
           <ImageUploader
             upload={handleUpload}
             capture
@@ -74,8 +81,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = (props) => {
               <CameraOutline style={{ fontSize: 48 }} />
             </div>
           </ImageUploader>
+          {showWarning && <Tag>Only types: {AllowedImageTypes.join(', ')} are allowed</Tag>}
         </div>
-
         <Link
           href="/mint"
           style={{ fontSize: '18px', textDecorationLine: 'underline' }}

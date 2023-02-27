@@ -24,6 +24,7 @@
     "eslint": "8.34.0",
     "eslint-config-next": "13.1.6",
     "ethers": "^5.7.2",
+    "formidable": "^2.1.1",
     "fs": "^0.0.1-security",
     "next": "13.1.6",
     "react": "18.2.0",
@@ -36,6 +37,7 @@
     "web3modal": "^1.9.12"
   },
   "devDependencies": {
+    "@types/formidable": "^2.0.5",
     "eslint-config-prettier": "^8.6.0",
     "eslint-plugin-prettier": "^4.2.1",
     "husky": "^8.0.3",

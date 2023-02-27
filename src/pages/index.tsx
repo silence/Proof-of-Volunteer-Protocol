@@ -1,5 +1,4 @@
 import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
-import Upload from './upload';
 
 export default function HomePage() {
   return (
@@ -15,8 +14,6 @@ export default function HomePage() {
       {/* Network Switcher Button */}
       <Web3NetworkSwitch />
       <br />
-
-      <Upload />
     </div>
   );
 }
