@@ -1,15 +1,5 @@
 import React, { useState } from 'react';
-import {
-  Space,
-  Result,
-  Form,
-  Input,
-  List,
-  Card,
-  InfiniteScroll,
-  Button,
-  Dialog
-} from 'antd-mobile';
+import { Result, Form, Input, List, Card, InfiniteScroll, Dialog } from 'antd-mobile';
 import { useRouter } from 'next/router';
 import { SmileOutline, UserContactOutline } from 'antd-mobile-icons';
 import { Attendee } from '@/types/attendee';
@@ -62,8 +52,8 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
             />
 
             <Form form={form} onValuesChange={handleSearch}>
-              <Form.Item label="Email" name="name">
-                <Input placeholder="Input email or select attendee from below"></Input>
+              <Form.Item label="" name="name">
+                <Input placeholder="Search the name"></Input>
               </Form.Item>
             </Form>
           </Card>

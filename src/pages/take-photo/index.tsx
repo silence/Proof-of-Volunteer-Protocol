@@ -36,8 +36,6 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     };
   };
 
-  console.log('fileList', fileList);
-
   return (
     <div className={styles.app}>
       <div className={styles.body}>
@@ -63,16 +61,16 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
             value={fileList}
             onChange={setFileList}
             upload={handleUpload}
-            capture
+            // capture
             maxCount={1}
             style={{ '--cell-size': '240px' }}
-            onDelete={() => {
-              return Dialog.confirm({
+            onDelete={() =>
+              Dialog.confirm({
                 content: 'Are you sure to remove this photo?',
                 cancelText: 'Cancel',
                 confirmText: 'Confirm'
-              });
-            }}
+              })
+            }
           >
             <div
               style={{
