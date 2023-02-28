@@ -20,14 +20,14 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
       const formData = new FormData();
       formData.append('imageFile', file, file.name);
-      await postData('/api/upload-image', formData)
-        .then((res) => {
-          console.log('res', res);
-        })
-        .catch((error) => {
-          console.log('error: ', error);
-          setErr(error.message);
-        });
+      // await postData('/api/upload-image', formData)
+      //   .then((res) => {
+      //     console.log('res', res);
+      //   })
+      //   .catch((error) => {
+      //     console.log('error: ', error);
+      //     setErr(error.message);
+      //   });
     } else {
       setShowWarning(true);
     }
