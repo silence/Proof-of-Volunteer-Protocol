@@ -13,6 +13,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   const [err, setErr] = useState<string>();
   const [showWarning, setShowWarning] = useState<boolean>(false);
 
+  const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
+
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     setShowWarning(false);
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
@@ -33,6 +35,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       url: URL.createObjectURL(file)
     };
   };
+
+  console.log('fileList', fileList);
 
   return (
     <div className={styles.app}>
@@ -56,6 +60,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           }}
         >
           <ImageUploader
+            value={fileList}
+            onChange={setFileList}
             upload={handleUpload}
             capture
             maxCount={1}
@@ -86,7 +92,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           {showWarning && <Tag>Only types: {AllowedImageTypes.join(', ')} are allowed</Tag>}
         </div>
         <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
-          Skip first
+          {fileList?.length ? 'Completed' : 'Skip first'}
         </Link>
       </div>
     </div>
