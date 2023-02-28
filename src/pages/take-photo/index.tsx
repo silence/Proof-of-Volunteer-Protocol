@@ -43,7 +43,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           <Result
             icon={<SmileOutline />}
             status="success"
-            title="You two met in 'OGBC Raffle Place'"
+            title="You two met in “Alibaba Cloud (Singapore)”"
           />
         </Card>
 
