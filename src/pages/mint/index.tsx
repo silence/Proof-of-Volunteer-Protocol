@@ -1,4 +1,3 @@
-import React from 'react';
 import { Card, Result, Button } from 'antd-mobile';
 import { SmileOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
@@ -6,7 +5,7 @@ import Link from 'next/link';
 
 export interface MintPageProps {}
 
-const MintPage: React.FC<MintPageProps> = (props) => {
+const MintPage: React.FC<MintPageProps> = () => {
   return (
     <div className={styles.app}>
       <div className={styles.body}>

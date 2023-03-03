@@ -3,7 +3,6 @@ import { Card, Result, ImageUploader, ImageUploadItem, Dialog, Tag } from 'antd-
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
 import Link from 'next/link';
-import { postData } from '@/util';
 
 export interface TakePhotoPageProps {}
 
@@ -15,19 +14,14 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
 
   const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
 
+  const [blobUrl, setBlobUrl] = useState<string>('');
+
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     setShowWarning(false);
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
-      const formData = new FormData();
-      formData.append('imageFile', file, file.name);
-      // await postData('/api/upload-image', formData)
-      //   .then((res) => {
-      //     console.log('res', res);
-      //   })
-      //   .catch((error) => {
-      //     console.log('error: ', error);
-      //     setErr(error.message);
-      //   });
+      const url = URL.createObjectURL(file);
+      setBlobUrl(url);
+      localStorage.setItem('imageBlobUrl', url);
     } else {
       setShowWarning(true);
     }
@@ -68,7 +62,10 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
               Dialog.confirm({
                 content: 'Are you sure to remove this photo?',
                 cancelText: 'Cancel',
-                confirmText: 'Confirm'
+                confirmText: 'Confirm',
+                onConfirm: () => {
+                  if (blobUrl) URL.revokeObjectURL(blobUrl);
+                }
               })
             }
           >
@@ -90,7 +87,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           {showWarning && <Tag>Only types: {AllowedImageTypes.join(', ')} are allowed</Tag>}
         </div>
         <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
-          {fileList?.length ? 'Completed' : 'Skip first'}
+          {fileList?.length && blobUrl.length ? 'Completed' : 'Skip first'}
         </Link>
       </div>
     </div>

@@ -45,7 +45,7 @@ const post = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     submitImage(imageFile).then(
       (resFromArseed) => {
         console.log(resFromArseed);
-        res.status(200).send({ result: 'save file success' });
+        res.status(200).send({ result: resFromArseed });
       },
       (error) => {
         console.log('error: ', error);
