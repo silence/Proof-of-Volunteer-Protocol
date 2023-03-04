@@ -55,7 +55,6 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
             value={fileList}
             onChange={setFileList}
             upload={handleUpload}
-            // capture
             maxCount={1}
             style={{ '--cell-size': '240px' }}
             onDelete={() =>
