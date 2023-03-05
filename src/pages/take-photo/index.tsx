@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Result, ImageUploader, ImageUploadItem, Dialog, Tag } from 'antd-mobile';
+import { Card, Result, ImageUploader, ImageUploadItem, Dialog, Tag, Button } from 'antd-mobile';
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
 import Link from 'next/link';
@@ -39,6 +39,20 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
             status="success"
             title="You two met in “Alibaba Cloud (Singapore)”"
           />
+
+          {Boolean(fileList?.length && blobUrl.length) ? (
+            <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
+              <Button block color="primary">
+                Next
+              </Button>
+            </Link>
+          ) : (
+            <div style={{ textAlign: 'center' }}>
+              <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
+                Skip first
+              </Link>
+            </div>
+          )}
         </Card>
 
         <div
@@ -85,9 +99,6 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           </ImageUploader>
           {showWarning && <Tag>Only types: {AllowedImageTypes.join(', ')} are allowed</Tag>}
         </div>
-        <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
-          {fileList?.length && blobUrl.length ? 'Completed' : 'Skip first'}
-        </Link>
       </div>
     </div>
   );
