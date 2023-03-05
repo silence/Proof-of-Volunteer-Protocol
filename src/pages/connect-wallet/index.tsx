@@ -41,15 +41,18 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        {blobUrl.length && isConnected && (
-          <img
-            src={blobUrl}
-            alt=""
-            style={{ maxHeight: '300px', width: 'auto', maxWidth: '100%' }}
-          />
-        )}
         <Card style={{ width: '100%' }}>
           <Result icon={<SmileOutline />} status="success" title="Connect Wallet!" />
+
+          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+            {blobUrl.length && isConnected && (
+              <img
+                src={blobUrl}
+                alt=""
+                style={{ maxHeight: '300px', width: 'auto', maxWidth: '100%' }}
+              />
+            )}
+          </div>
 
           <div style={{ textAlign: 'center' }}>
             <Web3Button icon="show" label="Connect Wallet" balance="show"></Web3Button>
