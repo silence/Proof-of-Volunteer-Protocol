@@ -3,4 +3,5 @@ export interface Attendee {
   role: string;
   email: string;
   introduction?: string;
+  wallet_address?: string;
 }

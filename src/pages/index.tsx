@@ -4,7 +4,7 @@ import abiJson from '@/abi.json';
 
 export default function HomePage() {
   // The address of the smart contract on Polygon
-  const contract = '0x903409a823476a89c35d37231bbec8065ae608ed';
+  const contract = '0x1e2f63405d0738B9F954E48F5292e305268750ea';
   // The wallet address that will receive the SBT
   const addr = '0x088238BaFC6d368d5aF78F2FD719C0008dec6Fdb';
   // This will determine the which token given to the user, e.g. Event1 -> tokenId 1, Event2 -> tokenId 2
@@ -23,6 +23,8 @@ export default function HomePage() {
     args: [addr, tokenId, 'https://www.youtube.com/watch?v=3tGYbYZRqdY']
   });
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
+
+  console.log('data', data, isLoading, isSuccess);
 
   /**
    * In the smart contract the media URI is saved as the type `mapping (address => mapping(uint256 => string))`

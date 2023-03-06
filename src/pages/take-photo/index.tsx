@@ -3,6 +3,7 @@ import { Card, Result, ImageUploader, ImageUploadItem, Dialog, Tag, Button } fro
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 
 export interface TakePhotoPageProps {}
 
@@ -15,6 +16,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
 
   const [blobUrl, setBlobUrl] = useState<string>('');
+
+  const router = useRouter();
 
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     setShowWarning(false);
@@ -41,11 +44,18 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           />
 
           {Boolean(fileList?.length && blobUrl.length) ? (
-            <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
-              <Button block color="primary">
-                Next
-              </Button>
-            </Link>
+            <Button
+              block
+              color="primary"
+              onClick={() =>
+                router.push({
+                  pathname: '/mint',
+                  query: router.query
+                })
+              }
+            >
+              Next
+            </Button>
           ) : (
             <div style={{ textAlign: 'center' }}>
               <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>

@@ -6,19 +6,15 @@ import { useRouter } from 'next/router';
 import { ATTENDEES } from '@/json/attendees';
 import { Attendee } from '@/types/attendee';
 import Link from 'next/link';
+import { useRecipient } from '@/hooks/useRecipient';
 
 export interface AttendeeDetailProps {}
 
 const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
   const router = useRouter();
-
-  const [attendee, setAttendee] = useState<Attendee>();
-
   const { email } = router.query;
 
-  useEffect(() => {
-    setAttendee(ATTENDEES.find((item) => item.email === email));
-  }, [email]);
+  const [attendee] = useRecipient(email as string);
 
   return (
     <div className={styles.app}>
@@ -42,11 +38,14 @@ const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
             </div>
           </Card>
 
-          <Link href="/take-photo">
-            <Button size="large" shape="rounded" color="primary">
-              Take a joint picture to remember such a moment
-            </Button>
-          </Link>
+          <Button
+            size="large"
+            shape="rounded"
+            color="primary"
+            onClick={() => router.push({ pathname: '/take-photo', query: { email } })}
+          >
+            Take a joint picture to remember such a moment
+          </Button>
         </Space>
       </div>
     </div>

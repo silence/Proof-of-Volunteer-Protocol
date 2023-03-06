@@ -4,7 +4,8 @@ export const ATTENDEES: Attendee[] = [
   {
     name: 'Tony',
     role: 'SeeDAO 成员',
-    email: 'tongwang.zh@outlook.com'
+    email: 'tongwang.zh@outlook.com',
+    wallet_address: '0x4B162DBa01943Bd8CD8af668bE72fB769999aC83'
   },
   {
     name: 'Mia',
@@ -20,5 +21,10 @@ export const ATTENDEES: Attendee[] = [
     name: 'Xueying',
     role: '投研公会',
     email: 'xueey.wang@gmail.com'
+  },
+  {
+    name: 'Darren',
+    role: 'SeeDAO 成员',
+    email: 'darren@outlook.com'
   }
 ];
