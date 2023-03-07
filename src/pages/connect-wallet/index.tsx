@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar } from 'antd-mobile';
 import { SmileOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
-import { Web3Button } from '@web3modal/react';
+import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { convertBase64, postData } from '@/util';
 import abiJson from '@/abi.json';
@@ -112,7 +112,8 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
           </div>
 
           <div style={{ textAlign: 'center', margin: '32px 0px' }}>
-            <Web3Button icon="show" label="Connect Wallet" balance="show"></Web3Button>
+            <Web3NetworkSwitch />
+            {/* <Web3Button icon="show" label="Connect Wallet" balance="show"></Web3Button> */}
           </div>
 
           {isConnected && !recipient?.wallet_address && (
