@@ -25,6 +25,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       const url = URL.createObjectURL(file);
       setBlobUrl(url);
       localStorage.setItem('imageBlobUrl', url);
+      localStorage.setItem('imageFileName', file.name);
     } else {
       setShowWarning(true);
     }

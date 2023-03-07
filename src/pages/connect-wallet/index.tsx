@@ -4,7 +4,7 @@ import { SmileOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
 import { Web3Button } from '@web3modal/react';
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { postData } from '@/util';
+import { convertBase64, postData } from '@/util';
 import abiJson from '@/abi.json';
 import { CONTRACT_ADDRESS } from '@/constants';
 import { useRouter } from 'next/router';
@@ -19,15 +19,23 @@ const useUploadImage = ({ blobUrl, isConnected }: { blobUrl: string; isConnected
     (async function extractFile() {
       try {
         if (isConnected && blobUrl.length) {
+          const fileName = localStorage.getItem('imageFileName');
           const file = await (await fetch(blobUrl)).blob();
-          const formData = new FormData();
-          formData.append('imageFile', file, file.name);
-          const res = await postData('/api/upload-image', formData);
+          const fileBase64 = await convertBase64(file);
+          // const formData = new FormData();
+          // formData.append('imageFile', file, file.name);
+          const res = await postData('/api/upload-image', {
+            content: fileBase64,
+            fileName
+          });
           console.log('res', res);
           setId(res?.result.itemId);
         }
       } catch (e: any) {
-        Dialog.alert({ content: e?.message || 'Error', confirmText: 'Dismiss' });
+        Dialog.alert({
+          content: e?.message || 'Error',
+          confirmText: 'Dismiss'
+        });
       }
     })();
   }, [isConnected, blobUrl]);
@@ -50,7 +58,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
     functionName: 'mint',
     args: [walletAddress, '1', imageId]
   });
-  const { data, isLoading, isSuccess, isError, write } = useContractWrite(config);
+  const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
   console.log('data', data, isSuccess, walletAddress);
 
@@ -73,7 +81,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
         }
       });
     }
-  }, [isSuccess]);
+  }, [isSuccess, router]);
 
   useEffect(() => {
     if (recipient) {
@@ -87,7 +95,13 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
         <Card style={{ width: '100%' }}>
           <Result icon={<SmileOutline />} status="success" title="Connect Wallet!" />
 
-          <div style={{ display: 'flex', justifyContent: 'center', marginBottom: '24px' }}>
+          <div
+            style={{
+              display: 'flex',
+              justifyContent: 'center',
+              marginBottom: '24px'
+            }}
+          >
             {blobUrl.length && isConnected && (
               <img
                 src={blobUrl}

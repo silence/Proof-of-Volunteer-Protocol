@@ -12,11 +12,15 @@ export const convertBase64 = (file: Blob) =>
     };
   });
 
-export async function postData(url: string, data: FormData) {
+export async function postData(url: string, data: any) {
   const response = await fetch(url, {
     method: 'POST',
     mode: 'cors',
-    body: data
+    body: JSON.stringify(data),
+    headers: new Headers({
+      'Content-Type': 'application/json',
+      Accept: 'application/json'
+    })
   });
 
   const json = await response.json();

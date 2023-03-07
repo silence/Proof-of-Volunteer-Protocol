@@ -1,6 +1,7 @@
 import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useContractRead, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import abiJson from '@/abi.json';
+import { useEffect, useState } from 'react';
 
 export default function HomePage() {
   // The address of the smart contract on Polygon
@@ -24,7 +25,20 @@ export default function HomePage() {
   });
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
+  const [url, setUrl] = useState<string>('');
+
   console.log('data', data, isLoading, isSuccess);
+
+  useEffect(() => {
+    async function getImage() {
+      const response = await fetch(
+        '/api/get-image?fileResId=aEMkHSFsTNVxzK5fozWCcfY92JbnqOVGlBEm41viKVo'
+      );
+      const file = await response.json();
+      setUrl(file.result);
+    }
+    getImage();
+  }, []);
 
   /**
    * In the smart contract the media URI is saved as the type `mapping (address => mapping(uint256 => string))`
@@ -58,6 +72,9 @@ export default function HomePage() {
       </div>
       <br />
       <div>{JSON.stringify(tokenUriData)}</div>
+      {url && (
+        <img src={url} alt="" style={{ maxHeight: '300px', width: 'auto', maxWidth: '100%' }} />
+      )}
     </div>
   );
 }
