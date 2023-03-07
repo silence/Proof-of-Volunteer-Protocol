@@ -7,7 +7,7 @@ export const useRecipient = (email: string) => {
 
   useEffect(() => {
     setRecipient(ATTENDEES.find((item) => item.email === email));
-  }, []);
+  }, [email]);
 
   return [recipient];
 };
