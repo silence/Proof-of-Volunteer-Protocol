@@ -10,11 +10,11 @@ type Data = {
 };
 
 // do not parse the body of response to allow the raw data
-// export const config = {
-//   api: {
-//     bodyParser: false
-//   }
-// };
+export const config = {
+  api: {
+    responseLimit: '20mb'
+  }
+};
 
 // async function submitImage(imageFile: File & { filepath: string; mimetype: string }) {
 function submitImage(imageData: string, imageType: string) {
