@@ -11,7 +11,6 @@ type Data = {
 
 export const config = {
   api: {
-    responseLimit: false,
     bodyParser: {
       sizeLimit: '20mb'
     }
@@ -35,7 +34,6 @@ function submitImage(imageData: string, imageType: string) {
 const post = async (req: NextApiRequest, res: NextApiResponse<Data>) => {
   try {
     const { content: base64, fileName } = req.body;
-    console.log('base: ', base64);
     const match = base64.match(/(?<=data:image\/)\w+/g);
 
     // const fData = await new Promise<{ fields: any; files: any }>((resolve) => {
