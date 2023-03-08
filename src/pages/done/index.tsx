@@ -17,23 +17,12 @@ const DonePage: React.FC<DonePageProps> = (props) => {
             title="Done!"
             description="Also share it to let everyone know you met :)"
           />
-
-          {/* <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <Space>
-              <FacebookShareButton url="https://nice-to-meet-you.vercel.app/checkin">
-                <FacebookIcon round size={48}></FacebookIcon>
-              </FacebookShareButton>
-              <TwitterShareButton url="https://nice-to-meet-you.vercel.app/checkin">
-                <TwitterIcon round size={48}></TwitterIcon>
-              </TwitterShareButton>
-            </Space>
-          </div> */}
           <div style={{ display: 'flex', justifyContent: 'center' }}>
             <Space>
-              <FacebookShareButton disabled>
+              <FacebookShareButton disabled url="">
                 <FacebookIcon round size={48}></FacebookIcon>
               </FacebookShareButton>
-              <TwitterShareButton disabled>
+              <TwitterShareButton disabled url="">
                 <TwitterIcon round size={48}></TwitterIcon>
               </TwitterShareButton>
             </Space>
