@@ -13,7 +13,7 @@ import { useGlobalState } from '@/hooks/globalContext';
 export interface ConnectWalletPageProps {}
 
 const useUploadImage = ({ blobUrl, isConnected }: { blobUrl: string; isConnected: boolean }) => {
-  const [id, setId] = useState();
+  const [id, setId] = useState('init');
 
   useEffect(() => {
     (async function extractFile() {
@@ -37,6 +37,7 @@ const useUploadImage = ({ blobUrl, isConnected }: { blobUrl: string; isConnected
         //   content: e?.message || 'Error',
         //   confirmText: 'Dismiss'
         // });
+        setId('debug');
       }
     })();
   }, [isConnected, blobUrl]);
@@ -61,9 +62,10 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
   });
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
-  console.log('data', data, isSuccess, walletAddress);
+  console.log('data', data, isSuccess, walletAddress, imageId);
 
   const handleMint = () => {
+    console.log('mint now');
     write?.();
   };
 
