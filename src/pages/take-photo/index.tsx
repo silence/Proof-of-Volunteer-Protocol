@@ -17,8 +17,6 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
 
   const [blobUrl, setBlobUrl] = useState<string>('');
 
-  const router = useRouter();
-
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     setShowWarning(false);
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
@@ -45,18 +43,11 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           />
 
           {Boolean(fileList?.length && blobUrl.length) ? (
-            <Button
-              block
-              color="primary"
-              onClick={() =>
-                router.push({
-                  pathname: '/mint',
-                  query: router.query
-                })
-              }
-            >
-              Next
-            </Button>
+            <Link href="/mint">
+              <Button block color="primary">
+                Next
+              </Button>
+            </Link>
           ) : (
             <div style={{ textAlign: 'center' }}>
               <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>

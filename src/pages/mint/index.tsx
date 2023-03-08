@@ -7,8 +7,6 @@ import { useRouter } from 'next/router';
 export interface MintPageProps {}
 
 const MintPage: React.FC<MintPageProps> = () => {
-  const router = useRouter();
-
   return (
     <div className={styles.app}>
       <div className={styles.body}>
@@ -18,19 +16,11 @@ const MintPage: React.FC<MintPageProps> = () => {
             status="success"
             title="Mint a POMP (Proof of Meet Protocol) SBT which will be stored permanently!"
           />
-          <Button
-            size="large"
-            color="primary"
-            block
-            onClick={() =>
-              router.push({
-                pathname: '/connect-wallet',
-                query: router.query
-              })
-            }
-          >
-            Mint Now
-          </Button>
+          <Link href="/connect-wallet">
+            <Button size="large" color="primary" block>
+              Mint Now
+            </Button>
+          </Link>
         </Card>
 
         <Link href="/done" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>

@@ -7,14 +7,13 @@ import { ATTENDEES } from '@/json/attendees';
 import { Attendee } from '@/types/attendee';
 import Link from 'next/link';
 import { useRecipient } from '@/hooks/useRecipient';
+import { useGlobalState } from '@/hooks/globalContext';
 
 export interface AttendeeDetailProps {}
 
 const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
   const router = useRouter();
-  const { email } = router.query;
-
-  const [attendee] = useRecipient(email as string);
+  const { recipient: attendee } = useGlobalState();
 
   return (
     <div className={styles.app}>
@@ -38,14 +37,11 @@ const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
             </div>
           </Card>
 
-          <Button
-            size="large"
-            shape="rounded"
-            color="primary"
-            onClick={() => router.push({ pathname: '/take-photo', query: { email } })}
-          >
-            Take a joint picture to remember such a moment
-          </Button>
+          <Link href="/take-photo">
+            <Button size="large" shape="rounded" color="primary">
+              Take a joint picture to remember such a moment
+            </Button>
+          </Link>
         </Space>
       </div>
     </div>

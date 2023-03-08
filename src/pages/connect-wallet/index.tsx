@@ -8,7 +8,7 @@ import { convertBase64, postData } from '@/util';
 import abiJson from '@/abi.json';
 import { CONTRACT_ADDRESS } from '@/constants';
 import { useRouter } from 'next/router';
-import { useRecipient } from '@/hooks/useRecipient';
+import { useGlobalState } from '@/hooks/globalContext';
 
 export interface ConnectWalletPageProps {}
 
@@ -29,13 +29,14 @@ const useUploadImage = ({ blobUrl, isConnected }: { blobUrl: string; isConnected
             fileName
           });
           console.log('res', res);
-          setId(res?.result.itemId);
+          setId(res?.result?.itemId || 'debug');
         }
       } catch (e: any) {
-        Dialog.alert({
-          content: e?.message || 'Error',
-          confirmText: 'Dismiss'
-        });
+        console.log('e', e);
+        // Dialog.alert({
+        //   content: e?.message || 'Error',
+        //   confirmText: 'Dismiss'
+        // });
       }
     })();
   }, [isConnected, blobUrl]);
@@ -47,7 +48,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
   const [blobUrl, setBlobUrl] = useState<string>('');
   const { isConnected } = useAccount();
   const router = useRouter();
-  const [recipient] = useRecipient((router?.query?.email as string) || '');
+  const { recipient } = useGlobalState();
   const [imageId] = useUploadImage({ blobUrl, isConnected });
 
   const [walletAddress, setWalletAddress] = useState(recipient?.wallet_address);
@@ -73,7 +74,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
 
   useEffect(() => {
     if (isSuccess) {
-      Dialog.alert({
+      const res = Dialog.alert({
         content: 'Mint Success!',
         confirmText: 'Got it',
         onConfirm: () => {

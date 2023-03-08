@@ -3,16 +3,19 @@ import { NoticeBar, Space, Input, Form, Button, Result, Card } from 'antd-mobile
 import { SmileOutline } from 'antd-mobile-icons';
 import { useRouter } from 'next/router';
 import styles from '@/styles/common.module.css';
+import { useSetGlobalState } from '@/hooks/globalContext';
 
 export interface CheckInPageProps {}
 
 const CheckInPage: React.FC<CheckInPageProps> = (props) => {
   const [form] = Form.useForm();
   const router = useRouter();
+  const setGlobalState = useSetGlobalState();
 
   const handleSubmit = async () => {
     const { email } = await form.validateFields();
-    router.push({ pathname: '/welcome', query: { email } }, '/welcome');
+    router.push({ pathname: '/welcome' });
+    setGlobalState((pre) => ({ ...pre, email }));
   };
 
   return (

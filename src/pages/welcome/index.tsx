@@ -8,7 +8,6 @@ import styles from '@/styles/common.module.css';
 export interface WelcomePageProps {}
 
 const WelcomePage: React.FC<WelcomePageProps> = (props) => {
-  const router = useRouter();
   return (
     <div className={styles.app}>
       <div className={styles.body}>

@@ -5,6 +5,7 @@ import { SmileOutline, UserContactOutline } from 'antd-mobile-icons';
 import { Attendee } from '@/types/attendee';
 import { ATTENDEES } from '@/json/attendees';
 import styles from '@/styles/common.module.css';
+import { useSetGlobalState } from '@/hooks/globalContext';
 
 export interface AttendeesListProps {}
 
@@ -12,6 +13,7 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
   const router = useRouter();
   const [form] = Form.useForm();
   const [searchKey, setSearchKey] = useState('');
+  const setGlobalState = useSetGlobalState();
 
   const handleSelectAttendee = async (item: Attendee) => {
     const result = await Dialog.confirm({
@@ -25,9 +27,9 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
     });
     if (result) {
       router.push({
-        pathname: '/attendee-detail',
-        query: { email: item.email }
+        pathname: '/attendee-detail'
       });
+      setGlobalState((pre) => ({ ...pre, recipient: item }));
     }
   };
 
