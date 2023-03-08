@@ -12,7 +12,7 @@ type Data = {
 // do not parse the body of response to allow the raw data
 export const config = {
   api: {
-    responseLimit: '20mb'
+    responseLimit: false
   }
 };
 
