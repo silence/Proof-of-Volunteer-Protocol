@@ -8,6 +8,7 @@ type Data = {
 // do not parse the body of response to allow the raw data
 export const config = {
   api: {
+    responseLimit: false,
     bodyParser: false
   }
 };
