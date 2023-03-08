@@ -28,6 +28,16 @@ const DonePage: React.FC<DonePageProps> = (props) => {
               </TwitterShareButton>
             </Space>
           </div> */}
+          <div style={{ display: 'flex', justifyContent: 'center' }}>
+            <Space>
+              <FacebookShareButton disabled>
+                <FacebookIcon round size={48}></FacebookIcon>
+              </FacebookShareButton>
+              <TwitterShareButton disabled>
+                <TwitterIcon round size={48}></TwitterIcon>
+              </TwitterShareButton>
+            </Space>
+          </div>
         </Card>
       </div>
     </div>
