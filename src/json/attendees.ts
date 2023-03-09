@@ -306,5 +306,15 @@ export const ATTENDEES: Attendee[] = [
   "name": "寒胜 (Hanseong Choi)",
   "email": "hanseong.choi@aol.com",
   "introduction": "社群的维护"
+ },
+ {
+  "name": " Zhidong Zhang",
+  "email": "zhidong.zhang@pingcap.com",
+  "introduction": "Centralised database"
+ },
+ {
+  "name": "林达",
+  "email": "mumuda2333@gmail.com",
+  "introduction": "了解一下web3"
  }
 ];
