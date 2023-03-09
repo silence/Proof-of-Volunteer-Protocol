@@ -2,17 +2,12 @@ import React, { useEffect, useState } from 'react';
 import { Card, Space, Button, Result } from 'antd-mobile';
 import { SmileOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
-import { useRouter } from 'next/router';
-import { ATTENDEES } from '@/json/attendees';
-import { Attendee } from '@/types/attendee';
 import Link from 'next/link';
-import { useRecipient } from '@/hooks/useRecipient';
 import { useGlobalState } from '@/hooks/globalContext';
 
 export interface AttendeeDetailProps {}
 
-const AttendeeDetail: React.FC<AttendeeDetailProps> = (props) => {
-  const router = useRouter();
+const AttendeeDetail: React.FC<AttendeeDetailProps> = () => {
   const { recipient: attendee } = useGlobalState();
 
   return (
