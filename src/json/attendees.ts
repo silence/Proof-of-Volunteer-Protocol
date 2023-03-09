@@ -3,7 +3,7 @@ import { Attendee } from '@/types/attendee';
 export const ATTENDEES: Attendee[] = [
  {
   "name": "Tony Wang",
-  "role": "城市联络人",
+  "role": "新加坡城市联络人",
   "email": "tongwang.zh@outlook.com",
   "introduction": "SeeDAO新加坡城市联络人",
   "wallet_address": "0x4B162DBa01943Bd8CD8af668bE72fB769999aC83"
