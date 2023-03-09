@@ -24,36 +24,43 @@ export const ATTENDEES: Attendee[] = [
  },
  {
   "name": "Aaron Chan",
+  "role": "SeeDAO 成员",
   "email": "aaron.chan@okx.com",
   "introduction": "看看有什么地方可以合作的"
  },
  {
   "name": "Agnes",
+  "role": "SeeDAO 成员",
   "email": "wangwenjiaagnes@gmail.com",
   "introduction": "n.a."
  },
  {
   "name": "Alex Young",
+  "role": "SeeDAO 成员",
   "email": "valorsobretodo@gmail.com",
   "introduction": "挖矿"
  },
  {
   "name": "Anna",
+  "role": "SeeDAO 成员",
   "email": "hongna07@gmail.com",
   "introduction": "没有经验，对DAO感兴趣"
  },
  {
   "name": "Chenghao Zhuang",
+  "role": "SeeDAO 成员",
   "email": "alinozhuang@outlook.com",
   "introduction": "Gamefi 实习经历"
  },
  {
   "name": "CHENG Ling",
+  "role": "SeeDAO 成员",
   "email": "cranesama@gmail.com",
   "introduction": "Illicit Activities detection on Crypto-Transaction network"
  },
  {
   "name": "Cipher ",
+  "role": "SeeDAO 成员",
   "email": "cipher@nervina.io",
   "introduction": "治理",
   "wallet_address": "0x67ebD60f4475ab8FA91a5a564CE73c6Dc67F477E"
@@ -73,23 +80,27 @@ export const ATTENDEES: Attendee[] = [
  },
  {
   "name": "Dorothy",
+  "role": "SeeDAO 成员",
   "email": "dorothy@altresear.ch",
   "introduction": "Head of growth at altlayer. Ex snx and hashkey",
   "wallet_address": "0x80dd72e4252f2d54Af2B131d9AB09Af24F893aE1"
  },
  {
   "name": "Eddie",
+  "role": "SeeDAO 成员",
   "email": "eddie@chainup.com",
   "introduction": "SeeDAO如何链接web3从业者，会为大家提供哪些便利？",
   "wallet_address": "0x740528246511b5187ffeac9c68d3fec177924fc7"
  },
  {
   "name": "Gao Yaning",
+  "role": "SeeDAO 成员",
   "email": "Andy.Gao@Sig.com",
   "introduction": "VC investing in web3"
  },
  {
   "name": "Gloria",
+  "role": "SeeDAO 成员",
   "email": "mengyagloriahe@gmail.com",
   "introduction": "Currently working in Web3 and stablecoin infrastructure ",
   "wallet_address": "0x57d2A2aD036887B90c1066AE0B87Af2C86818E46"
@@ -103,34 +114,40 @@ export const ATTENDEES: Attendee[] = [
  },
  {
   "name": "Jeff",
+  "role": "SeeDAO 成员",
   "email": "ng310808@gmail.com",
   "introduction": "Gamfi and connecting in data and earn",
   "wallet_address": "0x34BFd5096b6f7CE079273B47e1A3Ee1895E07b6F"
  },
  {
   "name": "Jeff Xu",
+  "role": "SeeDAO 成员",
   "email": "jeff_z_xu@yahoo.com",
   "introduction": "有比较长的程序交易经验。尝试将交易平台移到 web3",
   "wallet_address": "0x0b1339129FF643328dce586bf6E64039bFdE503b"
  },
  {
   "name": "jinbin",
+  "role": "SeeDAO 成员",
   "email": "wzxiejinbin@me.com",
   "introduction": "2013年开始入圈，创业，挖矿，投资，目前在火币投资部门"
  },
  {
   "name": "jing",
+  "role": "SeeDAO 成员",
   "email": "liujingyun0626@126.com",
   "introduction": "na"
  },
  {
   "name": "joy",
+  "role": "SeeDAO 成员",
   "email": "joy543song@gmail.com",
   "introduction": "bybit listing, 希望了解dao的治理",
   "wallet_address": "0xE7C28aCc58A6D2d3993b102a7c0B4EB45FeEBeBc"
  },
  {
   "name": "Kathy Zhu",
+  "role": "SeeDAO 成员",
   "email": "muse@ofr.asia",
   "introduction": "18年入行，在币安做国际市场，现在在Old Fashion Research做投资",
   "wallet_address": "Magicmuse.eth "
@@ -151,6 +168,7 @@ export const ATTENDEES: Attendee[] = [
  },
  {
   "name": "Lulu Li",
+  "role": "SeeDAO 成员",
   "email": "lulu@didelidi.com",
   "introduction": "I am NFT artist now exploring DAO for creators."
  },
@@ -163,157 +181,187 @@ export const ATTENDEES: Attendee[] = [
  },
  {
   "name": "Ma Yan",
+  "role": "SeeDAO 成员",
   "email": "mymymyyan@163.com",
   "introduction": "运营"
  },
  {
   "name": "miaomiao",
+  "role": "SeeDAO 成员",
   "email": "1685222405@qq.com",
   "introduction": "如何在web3挣钱"
  },
  {
   "name": "norman",
+  "role": "SeeDAO 成员",
   "email": "info@metafrontier-blockchain.com",
   "introduction": "Gamefi， Defi"
  },
  {
   "name": "Queenie Chu",
+  "role": "SeeDAO 成员",
   "email": "chuqiao2022@gmail.com",
   "introduction": "链上部署"
  },
  {
   "name": "rami",
+  "role": "SeeDAO 成员",
   "email": "ramiguo@icloud.com",
   "introduction": "了解打工人任何利用 DAO 挣钱"
  },
  {
   "name": "Rochelle",
+  "role": "SeeDAO 成员",
   "email": "runxiao.lei@gmail.com",
   "introduction": "AI"
  },
  {
   "name": "Sarah",
+  "role": "SeeDAO 成员",
   "email": "sarahwuyz@gmail.com",
   "introduction": "初步了解"
  },
  {
   "name": "sensor",
+  "role": "SeeDAO 成员",
   "email": "fectrain@outlook.com",
   "introduction": "对这个能做什么比较好奇"
  },
  {
   "name": "shen zhu",
+  "role": "SeeDAO 成员",
   "email": "e0952415@u.nus.edu",
   "introduction": "无"
  },
  {
   "name": "Siqi CHEN",
+  "role": "SeeDAO 成员",
   "email": "siqi.chen@essec.edu",
   "introduction": " I am excited about exploring the intersection of Web3 and digital marketing to help companies build sustainable and ethical brands that align with ESG principles. I believe that this emerging technology has the power to drive positive change and create a more equitable and transparent online world. With a strong background in problem-solving and data analysis, I am eager to apply my skills to this rapidly evolving industry and make a meaningful contribution to its growth. I am actively seeking internship opportunities to further develop my expertise in Web3 and ESG analysis, and I am committed to building a career that reflects my values and aspirations."
  },
  {
   "name": "TIAN JIAJIE",
+  "role": "SeeDAO 成员",
   "email": "1816402521@qq.com",
   "introduction": "Metaveese"
  },
  {
   "name": "wei li",
+  "role": "SeeDAO 成员",
   "email": "weili.walk@gmail.com",
   "introduction": "dao",
   "wallet_address": "beagles.eth"
  },
  {
   "name": "Wenhui JIA",
+  "role": "SeeDAO 成员",
   "email": "b00798766@essec.edu",
   "introduction": "Web3未来可能的发展空间，如何渗透各行业？"
  },
  {
   "name": "wenshuang",
+  "role": "SeeDAO 成员",
   "email": "carajzr@gmail.com",
   "introduction": "BuidlerDAO打杂，关注Social和NFT方向",
   "wallet_address": "0x12189a3b33cda988ef10375ce835ab582d3248c3"
  },
  {
   "name": "Wu yuanyang",
+  "role": "SeeDAO 成员",
   "email": "yuanyangwu@numencyber.com",
   "introduction": "Security Audit"
  },
  {
   "name": "Xifan",
+  "role": "SeeDAO 成员",
   "email": "wang1787@e.ntu.edu.sg",
   "introduction": "之前参与过元宇宙与虚拟人的研究"
  },
  {
   "name": "Xu Chenyang",
+  "role": "SeeDAO 成员",
   "email": "1355584278@qq.com",
   "introduction": "元宇宙；如何进行商业应用"
  },
  {
   "name": "Ye Qingxiang",
+  "role": "SeeDAO 成员",
   "email": "yeqingxiang@yahoo.com",
   "introduction": "了解web3的最新发展"
  },
  {
   "name": "Yihan Li",
+  "role": "SeeDAO 成员",
   "email": "neil.li.dev@gmail.com",
   "introduction": "Web3 developer， 怎么通过seedao加速项目",
   "wallet_address": "0x46dc3f7326288c1216be3b6BBccCE53d9AF18897"
  },
  {
   "name": "Yishi ",
+  "role": "SeeDAO 成员",
   "email": "yi23468@gmail.com",
   "introduction": "Shide ",
   "wallet_address": "Shide "
  },
  {
   "name": "Yolanda",
+  "role": "SeeDAO 成员",
   "email": "Yozhang555@gmail.com",
   "introduction": "Nope "
  },
  {
   "name": "Yolin",
+  "role": "SeeDAO 成员",
   "email": "yulin.tyl@alibaba-inc.com",
   "introduction": "行业动态"
  },
  {
   "name": "YouLin",
+  "role": "SeeDAO 成员",
   "email": "lynnnstark@gmail.com",
   "introduction": "Metaverse"
  },
  {
   "name": "Yue Hao",
+  "role": "SeeDAO 成员",
   "email": "hy1607492521@gmail.com",
   "introduction": ".",
   "wallet_address": "0x2ddF43Cf2ecaF8531d5d68C77982271fF7D97592"
  },
  {
   "name": "YUE Yiran",
+  "role": "SeeDAO 成员",
   "email": "yueyiran3@qq.com",
   "introduction": "-"
  },
  {
   "name": "zoey",
+  "role": "SeeDAO 成员",
   "email": "zoeyzou221@gmail.com",
   "introduction": "web3项目 "
  },
  {
   "name": "ZOU YUFAN",
+  "role": "SeeDAO 成员",
   "email": "zouyufan@outlook.com",
   "introduction": "new to web3, 借此作为了解的切入口",
   "wallet_address": "0x54483413677ad9f88510ab741b5d9f93059d2cbe"
  },
  {
   "name": "寒胜 (Hanseong Choi)",
+  "role": "SeeDAO 成员",
   "email": "hanseong.choi@aol.com",
   "introduction": "社群的维护"
  },
  {
   "name": " Zhidong Zhang",
+  "role": "SeeDAO 成员",
   "email": "zhidong.zhang@pingcap.com",
   "introduction": "Centralised database"
  },
  {
   "name": "林达",
+  "role": "SeeDAO 成员",
   "email": "mumuda2333@gmail.com",
   "introduction": "了解一下web3"
  }
