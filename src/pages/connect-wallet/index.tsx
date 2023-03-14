@@ -12,45 +12,49 @@ import { useGlobalState } from '@/hooks/globalContext';
 
 export interface ConnectWalletPageProps {}
 
-const useUploadImage = ({ blobUrl, isConnected }: { blobUrl: string; isConnected: boolean }) => {
-  const [id, setId] = useState('init');
+// const useUploadImage = ({
+//   imageObj,
+//   isConnected
+// }: {
+//   imageObj: ImageObjType;
+//   isConnected: boolean;
+// }) => {
+//   const [id, setId] = useState('init');
 
-  useEffect(() => {
-    (async function extractFile() {
-      try {
-        if (isConnected && blobUrl.length) {
-          const fileName = localStorage.getItem('imageFileName');
-          const file = await (await fetch(blobUrl)).blob();
-          const fileBase64 = await convertBase64(file);
-          // const formData = new FormData();
-          // formData.append('imageFile', file, file.name);
-          const res = await postData('/api/upload-image', {
-            content: fileBase64,
-            fileName
-          });
-          console.log('res', res);
-          setId(res?.result?.itemId || 'debug');
-        }
-      } catch (e: any) {
-        console.log('e', e);
-        // Dialog.alert({
-        //   content: e?.message || 'Error',
-        //   confirmText: 'Dismiss'
-        // });
-        setId('debug');
-      }
-    })();
-  }, [isConnected, blobUrl]);
+//   useEffect(() => {
+//     (async function extractFile() {
+//       try {
+//         if (isConnected && imageObj.name.length > 0 && imageObj.bucket.length > 0) {
+//           // const file = await (await fetch(blobUrl)).blob();
+//           // const fileBase64 = await convertBase64(file);
+//           // const formData = new FormData();
+//           // formData.append('imageFile', file, file.name);
+//           // const res = await postData('/api/upload-image', {
+//           //   content: fileBase64,
+//           //   fileName
+//           // });
+//           setId(`https://${imageObj.bucket}.4everland.store/${imageObj.name}`);
+//         }
+//       } catch (e: any) {
+//         console.log('e', e);
+//         // Dialog.alert({
+//         //   content: e?.message || 'Error',
+//         //   confirmText: 'Dismiss'
+//         // });
+//         setId('debug');
+//       }
+//     })();
+//   }, [isConnected, imageObj]);
 
-  return [id];
-};
+//   return [id];
+// };
 
 const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
-  const [blobUrl, setBlobUrl] = useState<string>('');
+  const [imageUrl, setImageUrl] = useState<string>('');
   const { isConnected } = useAccount();
   const router = useRouter();
   const { recipient } = useGlobalState();
-  const [imageId] = useUploadImage({ blobUrl, isConnected });
+  // const [imageId] = useUploadImage({ imageObj: imageUrl, isConnected });
 
   const [walletAddress, setWalletAddress] = useState(recipient?.wallet_address);
 
@@ -58,11 +62,11 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
     address: CONTRACT_ADDRESS,
     abi: abiJson,
     functionName: 'mint',
-    args: [walletAddress, '1', imageId]
+    args: [walletAddress, '1', imageUrl]
   });
   const { data, isLoading, isSuccess, write } = useContractWrite(config);
 
-  console.log('data', data, isSuccess, walletAddress, imageId);
+  console.log('data', data, isSuccess, walletAddress, imageUrl);
 
   const handleMint = () => {
     console.log('mint now');
@@ -70,8 +74,10 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
   };
 
   useEffect(() => {
-    const url: string = localStorage.getItem('imageBlobUrl') ?? '';
-    if (url.length) setBlobUrl(url);
+    const fileName = localStorage.getItem('ImageFileName') ?? '';
+    const bucketName = localStorage.getItem('BucketName') ?? '';
+    if (fileName.length && bucketName.length)
+      setImageUrl(`https://${bucketName}.4everland.store/${fileName}`);
   }, []);
 
   useEffect(() => {
@@ -105,9 +111,9 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
               marginBottom: '24px'
             }}
           >
-            {blobUrl.length && isConnected && (
+            {imageUrl.length && isConnected && (
               <img
-                src={blobUrl}
+                src={imageUrl}
                 alt=""
                 style={{ maxHeight: '300px', width: 'auto', maxWidth: '100%' }}
               />

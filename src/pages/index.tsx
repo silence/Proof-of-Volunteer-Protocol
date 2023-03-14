@@ -2,6 +2,12 @@ import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useContractRead, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import abiJson from '@/abi.json';
 import { useEffect, useState } from 'react';
+import { Upload } from '@aws-sdk/lib-storage';
+import { CameraOutline } from 'antd-mobile-icons';
+import { Dialog, ImageUploader, ImageUploadItem } from 'antd-mobile';
+import { S3 } from '@aws-sdk/client-s3';
+
+const AllowedImageTypes = ['jpeg', 'png', 'gif'];
 
 export default function HomePage() {
   // The address of the smart contract on Polygon
@@ -11,6 +17,7 @@ export default function HomePage() {
   // This will determine the which token given to the user, e.g. Event1 -> tokenId 1, Event2 -> tokenId 2
   const tokenId = 1;
 
+  const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
   /**
    * This calls the mint function which requires 3 arguments:
    * 1. Recipient wallet's address
@@ -27,19 +34,6 @@ export default function HomePage() {
 
   const [url, setUrl] = useState<string>('');
 
-  console.log('data', data, isLoading, isSuccess);
-
-  useEffect(() => {
-    async function getImage() {
-      const response = await fetch(
-        '/api/get-image?fileResId=aEMkHSFsTNVxzK5fozWCcfY92JbnqOVGlBEm41viKVo'
-      );
-      const file = await response.json();
-      setUrl(file.result);
-    }
-    getImage();
-  }, []);
-
   /**
    * In the smart contract the media URI is saved as the type `mapping (address => mapping(uint256 => string))`
    * So when try to retrieve the URI you need to provide both the address and tokenId as argument.
@@ -50,6 +44,69 @@ export default function HomePage() {
     functionName: '_tokenURIs',
     args: [addr, tokenId]
   });
+
+  const [s3client, setClient] = useState<S3>();
+
+  useEffect(() => {
+    const s3 = new S3({
+      endpoint: 'https://endpoint.4everland.co',
+      credentials: {
+        accessKeyId: 'ON4I2LI6AHLHFVJ838EL',
+        secretAccessKey: 'gQFNviKG3+rRHw3sKkUf+1silQZ2KhQEMIxS3Ad1'
+      },
+      region: 'us-west-2'
+    });
+    setClient(s3);
+  }, []);
+
+  const handleUpload = async (file: File): Promise<ImageUploadItem> => {
+    if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
+      if (s3client) {
+        const buckets = await s3client.listBuckets({});
+        if (buckets.Buckets) {
+          const bucketName = buckets.Buckets[0].Name;
+
+          s3client
+            .listObjectsV2({ Bucket: bucketName, MaxKeys: 10 })
+            .then((data) => {
+              if (data.Contents) {
+                data.Contents.forEach((o) => {
+                  console.log(o.Key);
+                });
+              }
+            })
+            .catch((err) => {
+              console.log(err);
+            });
+
+          // s3client
+          //   .putObject({
+          //     Bucket: buckets.Buckets[0].Name,
+          //     Key: file.name,
+          //     Body: file,
+          //     ContentType: file.type
+          //   })
+          //   .then((data) => {
+          //     console.log(data, file.name, bucketName);
+          //   })
+          //   .catch((error) => {
+          //     console.log('err: ', error);
+          //   });
+
+          // console.log(putObjectOutput, file.name, bucketName);
+        }
+      }
+      // const url = URL.createObjectURL(file);
+      // setBlobUrl(url);
+      // localStorage.setItem('imageBlobUrl', url);
+      // localStorage.setItem('imageFileName', file.name);
+    } else {
+      // setShowWarning(true);
+    }
+    return {
+      url: URL.createObjectURL(file)
+    };
+  };
 
   return (
     <div>
@@ -72,9 +129,38 @@ export default function HomePage() {
       </div>
       <br />
       <div>{JSON.stringify(tokenUriData)}</div>
-      {url && (
-        <img src={url} alt="" style={{ maxHeight: '300px', width: 'auto', maxWidth: '100%' }} />
-      )}
+      <ImageUploader
+        value={fileList}
+        onChange={setFileList}
+        upload={handleUpload}
+        maxCount={1}
+        style={{ '--cell-size': '240px' }}
+        onDelete={() =>
+          Dialog.confirm({
+            content: 'Are you sure to remove this photo?',
+            cancelText: 'Cancel',
+            confirmText: 'Confirm'
+            // onConfirm: () => {
+            //   if (blobUrl) URL.revokeObjectURL(blobUrl);
+            // }
+          })
+        }
+      >
+        <div
+          style={{
+            width: 240,
+            height: 240,
+            borderRadius: 80,
+            backgroundColor: '#f5f5f5',
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+            color: '#999999'
+          }}
+        >
+          <CameraOutline style={{ fontSize: 96 }} />
+        </div>
+      </ImageUploader>
     </div>
   );
 }

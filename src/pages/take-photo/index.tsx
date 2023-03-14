@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Card, Result, ImageUploader, ImageUploadItem, Dialog, Tag, Button } from 'antd-mobile';
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
 import Link from 'next/link';
-import { useRouter } from 'next/router';
+import { S3 } from '@aws-sdk/client-s3';
 
 export interface TakePhotoPageProps {}
 
@@ -15,15 +15,42 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
 
   const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
 
-  const [blobUrl, setBlobUrl] = useState<string>('');
+  const [imageObj, setImageObj] = useState<{ name: string; bucket: string }>();
+
+  const [s3client, setClient] = useState<S3>();
+
+  useEffect(() => {
+    const s3 = new S3({
+      endpoint: 'https://endpoint.4everland.co',
+      credentials: {
+        accessKeyId: 'ON4I2LI6AHLHFVJ838EL',
+        secretAccessKey: 'gQFNviKG3+rRHw3sKkUf+1silQZ2KhQEMIxS3Ad1'
+      },
+      region: 'us-west-2'
+    });
+    setClient(s3);
+  }, []);
 
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     setShowWarning(false);
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
-      const url = URL.createObjectURL(file);
-      setBlobUrl(url);
-      localStorage.setItem('imageBlobUrl', url);
-      localStorage.setItem('imageFileName', file.name);
+      if (s3client) {
+        const buckets = await s3client.listBuckets({});
+        if (buckets.Buckets) {
+          const bucketName = buckets.Buckets[0].Name;
+          if (bucketName) {
+            await s3client.putObject({
+              Bucket: bucketName,
+              Key: file.name,
+              Body: file,
+              ContentType: file.type
+            });
+            localStorage.setItem('BucketName', bucketName);
+            localStorage.setItem('ImageFileName', file.name);
+            setImageObj({ name: file.name, bucket: bucketName });
+          }
+        }
+      }
     } else {
       setShowWarning(true);
     }
@@ -42,7 +69,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
             title="You two met in “Alibaba Cloud (Singapore)”"
           />
 
-          {Boolean(fileList?.length && blobUrl.length) ? (
+          {Boolean(fileList?.length) ? (
             <Link href="/mint">
               <Button block color="primary">
                 Next
@@ -79,7 +106,10 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
                 cancelText: 'Cancel',
                 confirmText: 'Confirm',
                 onConfirm: () => {
-                  if (blobUrl) URL.revokeObjectURL(blobUrl);
+                  s3client?.deleteObject({
+                    Bucket: imageObj?.bucket,
+                    Key: imageObj?.name
+                  });
                 }
               })
             }
