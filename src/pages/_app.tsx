@@ -4,7 +4,7 @@ import { Web3Modal } from '@web3modal/react';
 import type { AppProps } from 'next/app';
 import '@/styles/globals.css';
 import { configureChains, createClient, WagmiConfig } from 'wagmi';
-import { polygon } from 'wagmi/chains';
+import { polygon, polygonMumbai } from 'wagmi/chains';
 import { GlobalState } from '@/types/global';
 import { GlobalStateContext, SetGlobalStateContext } from '@/hooks/globalContext';
 
@@ -17,7 +17,7 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 // 2. Configure wagmi client
-const chains = [polygon];
+const chains = [polygon, polygonMumbai];
 
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })]);
 const wagmiClient = createClient({
