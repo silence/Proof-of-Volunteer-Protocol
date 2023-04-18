@@ -1,3 +1,1 @@
-This is [Nice To Meet You](https://helpandgrow.notion.site/Tool-for-DAO-Member-Offline-Meetup-50a88453331448fca1f4ba592dce4512) project, a tool for DAO member offline meetup.
-
-In addition to run the project, you could also access our deployed demo [here](https://nice-to-meet-you.vercel.app/checkin)
+This is [Proof of Volunteer Protocol (POVP)](https://helpandgrow.notion.site/Proof-of-Volunteer-Protocol-POVP-94cdf9e1e9f94b60b0be8ad80dc29058) project, a Web3 tool for NGO and Social Enterprise to increase the scope and improve the sustainability.
