@@ -1,4 +1,6 @@
 This is [Proof of Volunteer Protocol (POVP)](https://helpandgrow.notion.site/Proof-of-Volunteer-Protocol-POVP-94cdf9e1e9f94b60b0be8ad80dc29058) project, a Web3 + AI tool for NGO and Social Enterprise to increase the scope and improve the sustainability.
+
+
 Help & Grow Community is a socially responsible community that aims to support NGOs and social enterprises around the world in their mission to help more children in need, using the power of Web3 and AI. We are committed to promoting environmental, social, and governance (ESG) principles and incorporating them into our community's practices.
 
 To achieve our goals, Help & Grow Community has been organizing a series of events, workshops, and bootcamps since November 22. This includes 7+ offline [Web3 sharing events](https://www.notion.so/Event-d2044669e6c349bea66adfa4c163591c), 6+ Web3 [workshops](https://www.notion.so/Workshop-6d35a4ded40d40c6bd19025474b9b610), and 2+ product building [bootcamps](https://www.notion.so/Bootcamp-ab284f671d7849e9a37ba336e5735e2a). These events have been highly successful in bringing together like-minded individuals who are passionate about using technology for social good.
