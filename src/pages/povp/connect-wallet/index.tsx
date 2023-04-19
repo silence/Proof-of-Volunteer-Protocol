@@ -11,7 +11,7 @@ import { useRouter } from 'next/router';
 import { useGlobalState } from '@/hooks/globalContext';
 import { povp_Contract_Address, Web3StorageApi } from '@/constants';
 import { Web3Storage } from 'web3.storage';
-
+import Web3 from 'web3';
 export interface ConnectWalletPageProps {}
 
 // const useUploadImage = ({
@@ -57,7 +57,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
   const router = useRouter();
   const { recipient, ipfsImageUrl, email } = useGlobalState();
   // const [imageId] = useUploadImage({ imageObj: imageUrl, isConnected });
-  const [walletAddress, setWalletAddress] = useState(recipient?.wallet_address);
+  const [walletAddress, setWalletAddress] = useState<string>();
   const [metaData, setmetaData] = useState<string>();
 
   const [client, setClient] = useState<Web3Storage>();
@@ -77,6 +77,14 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
   // console.log('data', data, isSuccess, walletAddress, imageUrl);
 
   const handleMint = async () => {
+    var web3 = new Web3(Web3.givenProvider);
+    if (web3) {
+      var accounts = await web3.eth.getAccounts();
+      setWalletAddress(accounts[0]);
+      console.log(accounts[0]);
+    } else {
+      console.log('Please connect wallet');
+    }
     var rawData = {
       description: 'Jerry Volunteered at Digital Literacy Help',
       external_url: '',
@@ -138,11 +146,11 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
     }
   }, [isSuccess, router]);
 
-  useEffect(() => {
-    if (recipient) {
-      setWalletAddress(recipient.wallet_address);
-    }
-  }, [recipient]);
+  // useEffect(() => {
+  //   if (recipient) {
+  //     setWalletAddress(recipient.wallet_address);
+  //   }
+  // }, [recipient]);
 
   return (
     <div className={styles.app}>
@@ -171,7 +179,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
             {/* <Web3Button icon="show" label="Connect Wallet" balance="show"></Web3Button> */}
           </div>
 
-          {isConnected && !recipient?.wallet_address && (
+          {/* {isConnected && (
             <Form
               onValuesChange={({ wallet_address }) => {
                 setWalletAddress(wallet_address);
@@ -187,7 +195,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
                 <Input placeholder="Input wallet address"></Input>
               </Form.Item>
             </Form>
-          )}
+          )} */}
 
           {isConnected && (
             <Button
@@ -196,7 +204,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
               color="primary"
               onClick={handleMint}
               loading={isLoading}
-              disabled={isSuccess || !walletAddress}
+              disabled={isSuccess}
             >
               Mint now
             </Button>

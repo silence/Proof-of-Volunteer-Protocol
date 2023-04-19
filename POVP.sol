@@ -18,6 +18,7 @@ contract POVP is ERC721 , Ownable{
     }
     /*
      to comply with opensea, data stored in metadataURI should be 
+
     I think this is done in the frontend to store it
     One thing good about using IPFS is that it cannot be tampered or modified, because if tampered the metadataURI will change
      */
