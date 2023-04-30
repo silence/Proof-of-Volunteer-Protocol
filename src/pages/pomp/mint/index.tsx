@@ -16,14 +16,14 @@ const MintPage: React.FC<MintPageProps> = () => {
             status="success"
             title="Mint a POMP (Proof of Meet Protocol) SBT which will be stored permanently!"
           />
-          <Link href="/connect-wallet">
+          <Link href="/pomp/connect-wallet">
             <Button size="large" color="primary" block>
               Mint Now
             </Button>
           </Link>
         </Card>
 
-        <Link href="/done" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
+        <Link href="/pomp/done" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
           Mint later
         </Link>
       </div>

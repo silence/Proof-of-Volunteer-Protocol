@@ -23,7 +23,7 @@ const WelcomePage: React.FC<WelcomePageProps> = (props) => {
             <Button block size="large" disabled>
               Claim POAP NFT
             </Button>
-            <Link href="/attendees-list">
+            <Link href="/pomp/attendees-list">
               <Button block size="large" color="primary">
                 View Attendee List
               </Button>

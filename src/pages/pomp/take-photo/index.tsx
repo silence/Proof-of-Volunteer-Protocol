@@ -70,14 +70,14 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           />
 
           {Boolean(fileList?.length) ? (
-            <Link href="/mint">
+            <Link href="/pomp/mint">
               <Button block color="primary">
                 Next
               </Button>
             </Link>
           ) : (
             <div style={{ textAlign: 'center' }}>
-              <Link href="/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
+              <Link href="/pomp/mint" style={{ fontSize: '18px', textDecorationLine: 'underline' }}>
                 Skip first
               </Link>
             </div>

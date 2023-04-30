@@ -86,7 +86,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
         content: 'Mint Success!',
         confirmText: 'Got it',
         onConfirm: () => {
-          router.push('/done');
+          router.push('/pomp/done');
         }
       });
     }

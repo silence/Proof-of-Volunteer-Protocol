@@ -32,7 +32,7 @@ const AttendeeDetail: React.FC<AttendeeDetailProps> = () => {
             </div>
           </Card>
 
-          <Link href="/take-photo">
+          <Link href="/pomp/take-photo">
             <Button size="large" shape="rounded" color="primary">
               Take a joint picture to remember such a moment
             </Button>

@@ -14,7 +14,7 @@ const CheckInPage: React.FC<CheckInPageProps> = (props) => {
 
   const handleSubmit = async () => {
     const { email } = await form.validateFields();
-    router.push({ pathname: '/welcome' });
+    router.push({ pathname: '/pomp/welcome' });
     setGlobalState((pre) => ({ ...pre, email }));
   };
 

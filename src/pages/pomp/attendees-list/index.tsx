@@ -27,7 +27,7 @@ const AttendeesList: React.FC<AttendeesListProps> = (props) => {
     });
     if (result) {
       router.push({
-        pathname: '/attendee-detail'
+        pathname: '/pomp/attendee-detail'
       });
       setGlobalState((pre) => ({ ...pre, recipient: item }));
     }
