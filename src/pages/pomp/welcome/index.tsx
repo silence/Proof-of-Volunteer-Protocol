@@ -32,6 +32,11 @@ const WelcomePage: React.FC<WelcomePageProps> = (props) => {
               Event Images & Videos
             </Button>
           </Space>
+          <iframe
+            style={{ width: '100%', height: '450px', background: 'white' }}
+            src="https://widget.0xecho.com?color-theme=light&desc=test&has-h-padding=true&has-v-padding=true&modules=comment%2Clike%2Ctip&receiver=0x46CE1348B3Dd340a9323aA21eD6c3a90359882cA&target_uri=https%3A%2F%2Fnice-to-meet-you.vercel.app%2Fpomp%2Fwelcome"
+            frameBorder="0"
+          />
         </Space>
       </div>
     </div>
