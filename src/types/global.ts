@@ -4,5 +4,4 @@ export interface GlobalState {
   recipient?: Attendee;
   email?: string;
   ipfsImageUrl?: string;
-  lensClient?: LensClient;
 }

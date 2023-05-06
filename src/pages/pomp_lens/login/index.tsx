@@ -6,21 +6,27 @@ import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar } fr
 import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import { LensClient, development } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
+import { LocalStorageProvider } from '../storage';
 
 export default function Home() {
   /* local state variables to hold user's address and access token */
-  const [address, setAddress] = useState();
-  const [token, setToken] = useState();
-  var { lensClient } = useGlobalState();
+  const [address, setAddress] = useState<string>();
+  const [token, setToken] = useState<string>();
+  // var { lensClient } = useGlobalState();
   const setGlobalState = useSetGlobalState();
   const router = useRouter();
+
+  const lensClient = new LensClient({
+    environment: development,
+    storage: new LocalStorageProvider()
+  });
   useEffect(() => {
     /* when the app loads, check to see if the user has already connected their wallet */
     checkConnection();
     checkLogin();
   }, []);
   async function checkConnection() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
+    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
     const accounts = await provider.listAccounts();
     if (accounts.length) {
       setAddress(accounts[0]);
@@ -28,7 +34,7 @@ export default function Home() {
   }
   async function connect() {
     /* this allows the user to connect their wallet */
-    const account = await window.ethereum.send('eth_requestAccounts');
+    const account = await (window as any).ethereum.send('eth_requestAccounts');
     if (account.result.length) {
       setAddress(account.result[0]);
     }
@@ -40,7 +46,7 @@ export default function Home() {
       console.log('Already login');
       const res = Dialog.alert({
         onConfirm: () => {
-          router.push('/pomp_lens/post');
+          router.push('/pomp_lens/profile');
         }
       });
     } else {
@@ -86,11 +92,7 @@ export default function Home() {
   // }
   async function login() {
     try {
-      const lensClient = new LensClient({
-        environment: development
-      });
-
-      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
       const signer = provider.getSigner();
 
       const address = await signer.getAddress();
@@ -102,7 +104,7 @@ export default function Home() {
 
       // check the state with
       if (await lensClient.authentication.isAuthenticated()) {
-        setGlobalState((pre) => ({ ...pre, lensClient }));
+        // setGlobalState((pre) => ({ ...pre, lensClient }));
         setToken('Success');
       }
     } catch (err) {

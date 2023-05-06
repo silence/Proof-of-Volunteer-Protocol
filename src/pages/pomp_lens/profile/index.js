@@ -6,14 +6,18 @@ import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar } fr
 import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import { LensClient, development } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
+import { LocalStorageProvider } from '../storage';
+import Link from 'next/link';
 
 export default function Home() {
   /* local state variables to hold user's address and access token */
   const [profile, setProfile] = useState();
   const [publications, setPublications] = useState();
   const [token, setToken] = useState();
-  const { lensClient } = useGlobalState();
-  const setGlobalState = useSetGlobalState();
+  const lensClient = new LensClient({
+    environment: development,
+    storage: new LocalStorageProvider()
+  });
   const router = useRouter();
 
   async function fetchProfile() {
@@ -39,6 +43,7 @@ export default function Home() {
       profileId: profileTmp.id,
       publicationTypes: ['POST', 'COMMENT', 'MIRROR']
     });
+    console.log(publications);
     setPublications(publications.items);
   }
   useEffect(() => {
@@ -66,11 +71,17 @@ export default function Home() {
               ) : (
                 <p>Loading Publications</p>
               )}
+              <Link href="/pomp_lens/post">
+                <Button block color="primary">
+                  Post
+                </Button>
+              </Link>
             </div>
           </div>
         ) : (
           <p>Loading Profile</p>
         )}
+        <div className="pt-20"></div>
       </div>
     </div>
   );

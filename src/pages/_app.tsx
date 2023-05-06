@@ -7,7 +7,7 @@ import { configureChains, createClient, WagmiConfig } from 'wagmi';
 import { polygon, polygonMumbai } from 'wagmi/chains';
 import { GlobalState } from '@/types/global';
 import { GlobalStateContext, SetGlobalStateContext } from '@/hooks/globalContext';
-
+import { NotificationProvider } from '@web3uikit/core';
 const GLOBAL_STATE_KEY = 'GLOBAL_STATE_KEY';
 
 // 1. Get projectID at https://cloud.walletconnect.com
@@ -54,16 +54,18 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [globalState]);
 
   return (
-    <GlobalStateContext.Provider value={globalState}>
-      <SetGlobalStateContext.Provider value={setGlobalState}>
-        {ready && (
-          <WagmiConfig client={wagmiClient}>
-            <Component {...pageProps} />
-          </WagmiConfig>
-        )}
+    <NotificationProvider>
+      <GlobalStateContext.Provider value={globalState}>
+        <SetGlobalStateContext.Provider value={setGlobalState}>
+          {ready && (
+            <WagmiConfig client={wagmiClient}>
+              <Component {...pageProps} />
+            </WagmiConfig>
+          )}
 
-        <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
-      </SetGlobalStateContext.Provider>
-    </GlobalStateContext.Provider>
+          <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
+        </SetGlobalStateContext.Provider>
+      </GlobalStateContext.Provider>
+    </NotificationProvider>
   );
 }
