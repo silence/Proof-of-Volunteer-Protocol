@@ -14,10 +14,11 @@ import { ethers } from 'ethers';
 const AllowedImageTypes = ['jpeg', 'png', 'gif'];
 import { useRouter } from 'next/router';
 import { useNotification } from '@web3uikit/core';
-
+import {PublicationMetadataDisplayType,PublicationMainFocus,MetadataAttributeInput} from '../../interfaces/publication'
 import abi from '../lens_hub_abi.json' assert { type: 'json' };
 
 import Web3 from 'web3';
+
 const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   const router = useRouter();
   const [err, setErr] = useState<string>();
@@ -47,15 +48,12 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     // setClient(s3);
   }, []);
 
-  const postNFT = async () => {
-    const metadata = {
-      // valid metadata
-      organization: 'Help and Grow',
-      event_name: 'Help and Grow Annual Meetup',
-      volunteers: 'Tony and Chenghao'
-    };
 
-    // ************* to optimize
+
+
+
+
+  const postNFT = async () => {
     const provider = new ethers.providers.Web3Provider((window as any).ethereum);
     const accounts = await provider.listAccounts();
     const address = accounts[0];
@@ -64,37 +62,97 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       limit: 1
     });
     const profile = allOwnedProfiles.items[0];
+
+    // const attribute1:MetadataAttributeInput = {
+    //     traitType: "Meetup Time",
+    //     value: Date.now().toString(),
+    //   }
+    
+    const metadata = {
+        appId: "POMP",
+        attributes: [
+              {
+                traitType: "Meetup Time",
+                value: Date.now().toString(),
+              },{
+                traitType: "Contact",
+                value:profile.handle
+              },
+              {
+                traitType:'Meet',
+                value: "helpandgrow.test"
+              },
+              {
+                traitType:'Event',
+                value:"Help and Grow Annual Meetup"
+              },
+              {
+                traitType:'Organization',
+                value:'New Hope'
+              }
+        ],
+        content: "It is a great honor to meet Jerry today!",
+        description: "Super happy to meet Dalao! ",
+        locale: "en",
+        mainContentFocus: PublicationMainFocus.Image ,
+        image: imageURL!,
+    
+        media: [{
+            item:imageURL!,
+            type:'image/jpeg'
+        }],
+        metadata_id: imageURL!,
+        name: "Proof Of Meet Protocol",
+        tags: ["HelpAndGrow","Volunteer",'New Hope'],
+        version: "2.0.0",
+      };
+      console.log(metadata.media)
+      const validateResult = await lensClient.publication.validateMetadata(metadata);
+      
+      if (!validateResult.valid) {
+        console.log(validateResult)
+        throw new Error(`Metadata is not valid.`);
+      }
+      if (client) {
+        const blob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
+        const rootCid = await client?.put([new File([blob], 'lensMetaData.json')]);
+        var contentURI = `https://${rootCid}.ipfs.w3s.link/lensMetaData.json`;
+      }else{
+            throw new Error('IPFS not connected');
+        }
+    // ************* to optimize
+
     // upload metadata to ipfs or arweave - upload is your custom function that returns contentURI
 
     // or with typedData that require signature and broadcasting
     const typedDataResult = await lensClient.publication.createPostTypedData({
       profileId: profile.id,
-      contentURI: imageURL!,
+      contentURI: contentURI!,
+    //   collectModule: {
+    //     freeCollectModule: {
+    //       followerOnly: false
+    //     }
+    //   },
       collectModule: {
-        freeCollectModule: {
-          followerOnly: true
-        }
+          multirecipientFeeCollectModule: {
+              amount: {
+                 currency: "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e",
+                 value: "0.01"
+               },
+               recipients: [
+                 {
+                  recipient: address,
+                   split: 20
+                 },
+                 {
+                  recipient: "0x4B162DBa01943Bd8CD8af668bE72fB769999aC83",
+                  split: 80
+                 }
+               ],
+               referralFee: 10,
+               followerOnly: false,
+          }
       },
-      // collectModule: {
-      //     multirecipientFeeCollectModule: {
-      //         amount: {
-      //            currency: "0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e",
-      //            value: "0.01"
-      //          },
-      //          recipients: [
-      //            {
-      //             recipient: address,
-      //              split: 20
-      //            },
-      //            {
-      //             recipient: "0x4B162DBa01943Bd8CD8af668bE72fB769999aC83",
-      //             split: 80
-      //            }
-      //          ],
-      //          referralFee: 10,
-      //          followerOnly: false,
-      //     }
-      // },
       referenceModule: {
         followerOnlyReferenceModule: false // anybody can comment or mirror
       }
@@ -137,7 +195,16 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
         }
       });
       console.log(`tx hash`, tx.hash);
-      //   0x6f83295574a8e0344df11c953c02280a3ddecdc66957d26d628bfd159e48167a
+      const res = Dialog.alert({
+        content: 'Mint Success!',
+        confirmText: 'Got it',
+        onConfirm: () => {
+          router.push('/pomp_lens/profile');
+        }
+      });
+
+
+      //   0xaaa270c8ee36f3418c144a7342c65208f464962ed590f52237130da78ac8a234
       // const web3 = new Web3('https://polygon-mumbai.g.alchemy.com/v2/oCg7K_rQwFRVdDpFHhBtm5OcH-FZV_kW')
       // web3.eth.sendSignedTransaction(signature, (err, txHash) => {
       //     console.log(err)

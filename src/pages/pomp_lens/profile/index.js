@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { client, challenge, authenticate } from '../../api/lens_api';
 import styles from '@/styles/common.module.css';
-import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar } from 'antd-mobile';
+import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar,Image } from 'antd-mobile';
 import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import { LensClient, development } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
@@ -66,6 +66,7 @@ export default function Home() {
                 publications.map((pub) => (
                   <div key={pub.id} className="shadow p-10 rounded mb-8 w-2/3">
                     <p>{pub.metadata.content}</p>
+                    <Image src={pub.metadata.media[0].original.url}></Image>
                   </div>
                 ))
               ) : (

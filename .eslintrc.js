@@ -13,6 +13,7 @@ module.exports = {
         trailingComma: 'none' // Will be the default in Prettier 3.0
       }
     ],
-    'linebreak-style': ['error', 'unix']
+    'linebreak-style': ['error', 'unix'],
+    "endOfLine": "auto"
   }
 };

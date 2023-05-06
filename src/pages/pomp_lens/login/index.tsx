@@ -44,11 +44,9 @@ export default function Home() {
   async function checkLogin() {
     if (await lensClient?.authentication?.isAuthenticated()) {
       console.log('Already login');
-      const res = Dialog.alert({
-        onConfirm: () => {
-          router.push('/pomp_lens/profile');
-        }
-      });
+
+      router.push('/pomp_lens/profile');
+
     } else {
       console.log('didnt login');
     }
@@ -59,7 +57,7 @@ export default function Home() {
         content: 'Login Success!',
         confirmText: 'Got it',
         onConfirm: () => {
-          router.push('/pomp_lens/post');
+          router.push('/pomp_lens/profile');
         }
       });
     }
