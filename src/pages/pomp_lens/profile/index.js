@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
 import { client, challenge, authenticate } from '../../api/lens_api';
 import styles from '@/styles/common.module.css';
@@ -25,10 +25,14 @@ export default function Home() {
   const [profile, setProfile] = useState();
   const [publications, setPublications] = useState();
   const [token, setToken] = useState();
-  const lensClient = new LensClient({
-    environment: development,
-    storage: new LocalStorageProvider()
-  });
+  const lensClient = useMemo(
+    () =>
+      new LensClient({
+        environment: development,
+        storage: new LocalStorageProvider()
+      }),
+    []
+  );
   const router = useRouter();
 
   useEffect(() => {
@@ -60,7 +64,7 @@ export default function Home() {
     }
 
     fetchPublications();
-  }, []); // default trigger run if any changes
+  }, [lensClient]); // default trigger run if any changes
 
   return (
     <div className={styles.app}>
