@@ -60,7 +60,7 @@ export default function Home() {
     }
 
     fetchPublications();
-  }, []); // default trigger run if any changes
+  }, [lensClient.profile, lensClient.publication]); // default trigger run if any changes
 
   return (
     <div className={styles.app}>
@@ -68,7 +68,12 @@ export default function Home() {
         {profile ? (
           <div className="pt-20">
             <div className="flex flex-col justify-center items-center">
-              <Image alt="" className="w-64 rounded-full" src={profile.picture.original.url} />
+              <Image
+                alt=""
+                className="w-64 rounded-full"
+                style={{ width: '16rem' }}
+                src={profile.picture.original.url}
+              />
               <p className="text-4xl mt-8 mb-8">{profile.handle}</p>
               <p className="text-center text-xl font-bold mt-2 mb-2 w-1/2">{profile.bio}</p>
 
