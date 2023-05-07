@@ -18,7 +18,7 @@ import {
   PublicationMetadataDisplayType,
   PublicationMainFocus,
   MetadataAttributeInput
-} from '../../interfaces/publication';
+} from '../../../interfaces/publication';
 import abi from '../lens_hub_abi.json' assert { type: 'json' };
 
 import Web3 from 'web3';
