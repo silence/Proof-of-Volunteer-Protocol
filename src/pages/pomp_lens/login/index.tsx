@@ -6,7 +6,7 @@ import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar } fr
 import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import { LensClient, development } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
-import { LocalStorageProvider } from '../storage';
+import LocalStorageProvider from '../storage';
 
 export default function Home() {
   /* local state variables to hold user's address and access token */
@@ -22,16 +22,28 @@ export default function Home() {
   });
   useEffect(() => {
     /* when the app loads, check to see if the user has already connected their wallet */
+    async function checkLogin() {
+      if (await lensClient?.authentication?.isAuthenticated()) {
+        console.log('Already login');
+
+        router.push('/pomp_lens/profile');
+      } else {
+        console.log('didnt login');
+      }
+    }
+
+    async function checkConnection() {
+      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+      const accounts = await provider.listAccounts();
+      if (accounts.length) {
+        setAddress(accounts[0]);
+      }
+    }
+
     checkConnection();
     checkLogin();
-  }, []);
-  async function checkConnection() {
-    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-    const accounts = await provider.listAccounts();
-    if (accounts.length) {
-      setAddress(accounts[0]);
-    }
-  }
+  }, [lensClient?.authentication, router]);
+
   async function connect() {
     /* this allows the user to connect their wallet */
     const account = await (window as any).ethereum.send('eth_requestAccounts');
@@ -41,16 +53,6 @@ export default function Home() {
   }
 
   /////// this function didnt work
-  async function checkLogin() {
-    if (await lensClient?.authentication?.isAuthenticated()) {
-      console.log('Already login');
-
-      router.push('/pomp_lens/profile');
-
-    } else {
-      console.log('didnt login');
-    }
-  }
   useEffect(() => {
     if (token) {
       const res = Dialog.alert({

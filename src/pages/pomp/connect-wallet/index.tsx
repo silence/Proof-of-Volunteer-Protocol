@@ -9,6 +9,7 @@ import abiJson from '@/abi.json';
 import { CONTRACT_ADDRESS } from '@/constants';
 import { useRouter } from 'next/router';
 import { useGlobalState } from '@/hooks/globalContext';
+import Image from 'next/image';
 
 export interface ConnectWalletPageProps {}
 
@@ -112,7 +113,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
             }}
           >
             {imageUrl.length && isConnected && (
-              <img
+              <Image
                 src={imageUrl}
                 alt=""
                 style={{ maxHeight: '300px', width: 'auto', maxWidth: '100%' }}

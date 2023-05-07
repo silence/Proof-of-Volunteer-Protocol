@@ -3,7 +3,7 @@ interface IStorageProvider {
   setItem(key: string, value: string): Promise<string> | Promise<void> | void | string;
   removeItem(key: string): Promise<string> | Promise<void> | void;
 }
-export class LocalStorageProvider implements IStorageProvider {
+export default class LocalStorageProvider implements IStorageProvider {
   getItem(key: string) {
     return window.localStorage.getItem(key);
   }

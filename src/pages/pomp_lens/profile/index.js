@@ -2,11 +2,22 @@ import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
 import { client, challenge, authenticate } from '../../api/lens_api';
 import styles from '@/styles/common.module.css';
-import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar,Image } from 'antd-mobile';
+import {
+  Card,
+  Result,
+  Button,
+  Space,
+  Toast,
+  Dialog,
+  Form,
+  Input,
+  NoticeBar,
+  Image
+} from 'antd-mobile';
 import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import { LensClient, development } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
-import { LocalStorageProvider } from '../storage';
+import LocalStorageProvider from '../storage';
 import Link from 'next/link';
 
 export default function Home() {
@@ -20,37 +31,36 @@ export default function Home() {
   });
   const router = useRouter();
 
-  async function fetchProfile() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-    const address = accounts[0];
-    const allOwnedProfiles = await lensClient.profile.fetchAll({
-      ownedBy: [address],
-      limit: 1
-    });
-    setProfile(allOwnedProfiles.items[0]); // cannot access profile directly for next step, it will return undefined
-    return allOwnedProfiles.items[0];
-  }
-
-  async function fetchPublications() {
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-    const address = accounts[0];
-
-    var profileTmp = await fetchProfile();
-
-    const publications = await lensClient.publication.fetchAll({
-      profileId: profileTmp.id,
-      publicationTypes: ['POST', 'COMMENT', 'MIRROR']
-    });
-    console.log(publications);
-    setPublications(publications.items);
-  }
   useEffect(() => {
-    fetchPublications();
+    async function fetchProfile() {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.listAccounts();
+      const address = accounts[0];
+      const allOwnedProfiles = await lensClient.profile.fetchAll({
+        ownedBy: [address],
+        limit: 1
+      });
+      setProfile(allOwnedProfiles.items[0]); // cannot access profile directly for next step, it will return undefined
+      return allOwnedProfiles.items[0];
+    }
 
-    // fetchPublications();
-  }, []); // default trigger run if any changes
+    async function fetchPublications() {
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+      const accounts = await provider.listAccounts();
+      const address = accounts[0];
+
+      var profileTmp = await fetchProfile();
+
+      const publications = await lensClient.publication.fetchAll({
+        profileId: profileTmp.id,
+        publicationTypes: ['POST', 'COMMENT', 'MIRROR']
+      });
+      console.log(publications);
+      setPublications(publications.items);
+    }
+
+    fetchPublications();
+  }, [setProfile, lensClient.publication, lensClient.profile]); // default trigger run if any changes
 
   return (
     <div className={styles.app}>
@@ -58,7 +68,7 @@ export default function Home() {
         {profile ? (
           <div className="pt-20">
             <div className="flex flex-col justify-center items-center">
-              <img className="w-64 rounded-full" src={profile.picture.original.url} />
+              <Image alt="" className="w-64 rounded-full" src={profile.picture.original.url} />
               <p className="text-4xl mt-8 mb-8">{profile.handle}</p>
               <p className="text-center text-xl font-bold mt-2 mb-2 w-1/2">{profile.bio}</p>
 
@@ -66,7 +76,7 @@ export default function Home() {
                 publications.map((pub) => (
                   <div key={pub.id} className="shadow p-10 rounded mb-8 w-2/3">
                     <p>{pub.metadata.content}</p>
-                    <Image src={pub.metadata.media[0].original.url}></Image>
+                    <Image alt="" src={pub.metadata.media[0].original.url}></Image>
                   </div>
                 ))
               ) : (

@@ -12,6 +12,7 @@ import { useGlobalState } from '@/hooks/globalContext';
 import { povp_Contract_Address, Web3StorageApi } from '@/constants';
 import { Web3Storage } from 'web3.storage';
 import Web3 from 'web3';
+import Image from 'next/image';
 export interface ConnectWalletPageProps {}
 
 // const useUploadImage = ({
@@ -166,7 +167,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
             }}
           >
             {imageUrl.length && isConnected && (
-              <img
+              <Image
                 src={imageUrl}
                 alt=""
                 style={{ maxHeight: '300px', width: 'auto', maxWidth: '100%' }}
