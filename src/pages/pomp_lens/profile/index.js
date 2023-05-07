@@ -60,7 +60,7 @@ export default function Home() {
     }
 
     fetchPublications();
-  }, [setProfile, lensClient.publication, lensClient.profile]); // default trigger run if any changes
+  }, []); // default trigger run if any changes
 
   return (
     <div className={styles.app}>
