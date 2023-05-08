@@ -100,14 +100,15 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       media: [
         {
           item: imageURL!,
-          type: 'image/jpeg'
+          type: 'image/'+imageURL?.split(".")[imageURL?.split(".").length-1]
         }
       ],
       metadata_id: imageURL!,
       name: 'Proof Of Meet Protocol',
-      tags: ['HelpAndGrow', 'Volunteer', 'New Hope'],
+      tags: ['HelpAndGrow', 'Volunteer'],
       version: '2.0.0'
     };
+    
     console.log(metadata.media);
     const validateResult = await lensClient.publication.validateMetadata(metadata);
 
@@ -176,27 +177,33 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       );
       console.log(signature);
 
-      const { v, r, s } = ethers.utils.splitSignature(signature);
-      const LENS_HUB_ABI = abi;
-      const tx = await new ethers.Contract(
-        '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82',
-        LENS_HUB_ABI,
-        signer
-      ).postWithSig({
-        profileId: typedData.value.profileId,
-        contentURI: typedData.value.contentURI,
-        collectModule: typedData.value.collectModule,
-        collectModuleInitData: typedData.value.collectModuleInitData,
-        referenceModule: typedData.value.referenceModule,
-        referenceModuleInitData: typedData.value.referenceModuleInitData,
-        sig: {
-          v,
-          r,
-          s,
-          deadline: typedData.value.deadline
-        }
+      const broadcastResult = await lensClient.transaction.broadcast({
+        id: result.id,
+        signature: signature,
       });
-      console.log(`tx hash`, tx.hash);
+      console.log(broadcastResult);
+     
+    //   const { v, r, s } = ethers.utils.splitSignature(signature);
+    //   const LENS_HUB_ABI = abi;
+    //   const tx = await new ethers.Contract(
+    //     '0x60Ae865ee4C725cd04353b5AAb364553f56ceF82',
+    //     LENS_HUB_ABI,
+    //     signer
+    //   ).postWithSig({
+    //     profileId: typedData.value.profileId,
+    //     contentURI: typedData.value.contentURI,
+    //     collectModule: typedData.value.collectModule,
+    //     collectModuleInitData: typedData.value.collectModuleInitData,
+    //     referenceModule: typedData.value.referenceModule,
+    //     referenceModuleInitData: typedData.value.referenceModuleInitData,
+    //     sig: {
+    //       v,
+    //       r,
+    //       s,
+    //       deadline: typedData.value.deadline
+    //     }
+    //   });
+
       const res = Dialog.alert({
         content: 'Mint Success!',
         confirmText: 'Got it',

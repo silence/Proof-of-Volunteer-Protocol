@@ -20,7 +20,11 @@ import { useRouter } from 'next/router';
 import LocalStorageProvider from '../storage';
 import Link from 'next/link';
 import {mainProfile} from '../../../constants/index'
-
+import {
+  PublicationMetadataDisplayType,
+  PublicationMainFocus,
+  MetadataAttributeInput
+} from '../../../interfaces/publication';
 // 0x7ebd
 export default function Home() {
   /* local state variables to hold user's address and access token */
@@ -55,63 +59,35 @@ export default function Home() {
   }
 
   async function fetchPublications() {
-    var profileTmp = await fetchProfile();
-
-    const publications = await lensClient.publication.fetchAll({
-      profileId: profileTmp.id,
-      publicationTypes: ['POST', 'COMMENT', 'MIRROR']
+    fetchProfile();
+    const result = await lensClient.profile.allFollowers({
+      profileId: mainProfile,
     });
-    console.log(publications);
+    
+    var profileList = []
+    for (var i =0;i<result.items.length;i++){
+      profileList.push(result.items[i].wallet.defaultProfile.id)
+    }
+    console.log(profileList);
+    const publications = await lensClient.publication.fetchAll({
+      metadata: {
+        locale: "en",
+        
+        mainContentFocus: [PublicationMainFocus.Image],
+        tags: {
+          oneOf: ["HelpAndGrow"],
+        },
+      },
+      profileIds:profileList
+    });
     setPublications(publications.items);
   }
 
-  async function checkFollowing(){
-    
-    console.log(address);
-    const res = await lensClient.profile.doesFollow({
-      followInfos:[{
-          followerAddress:address,
-          profileId:mainProfile
-        }
-  ]});
-  console.log(res)
-  if (res.follows==false){
-    
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
-    const followTypedDataResult = await lensClient.profile.createFollowTypedData({
-      follow: [
-        {
-          profile: mainProfile
-        },
-      ],
-    });
-    
-    // sign and broadcast the typed data
-    const data = followTypedDataResult.unwrap();
-    
-    // sign with the wallet
-    const signedTypedData = await signer._signTypedData(
-      data.typedData.domain,
-      data.typedData.types,
-      data.typedData.value
-    );
-    
-    const broadcastResult = await lensClient.transaction.broadcast({
-      id: data.id,
-      signature: signedTypedData,
-    });
-    console.log(broadcastResult);
-  }
-  }
+
   useEffect(() => {
     fetchPublications();
   }, [lensClient]); 
-  useEffect(()=>{
-    if (address!==null && profile!=null ){
-      checkFollowing();
-    }
-  },[address,profile])
+
   async function collectPublication(id){
     console.log("#######")
     console.log(id)
@@ -144,14 +120,14 @@ export default function Home() {
         {profile ? (
           <div className="pt-20">
             <div className="flex flex-col justify-center items-center">
-              <Image
+              {/* <Image
                 alt=""
                 className="w-64 rounded-full"
                 style={{ width: '16rem' }}
                 src={profile.picture.original.url}
-              />
-              <p className="text-4xl mt-8 mb-8">{profile.handle}</p>
-              <p className="text-center text-xl font-bold mt-2 mb-2 w-1/2">{profile.bio}</p>
+              /> */}
+              <p className="text-4xl mt-8 mb-8">Help and Grow Community Home</p>
+              {/* <p className="text-center text-xl font-bold mt-2 mb-2 w-1/2">{profile.bio}</p> */}
 
               {publications ? (
                 publications.map((pub) => (
