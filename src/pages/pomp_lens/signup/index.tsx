@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { ethers } from 'ethers';
+
 import { client, challenge, authenticate } from '../../api/lens_api';
 import styles from '@/styles/common.module.css';
 import { Card, Space,Form,Input, Result, ImageUploader, ImageUploadItem, Dialog, Tag, Button } from 'antd-mobile';
@@ -10,9 +11,11 @@ import LocalStorageProvider from '../storage';
 import { Web3Storage } from 'web3.storage';
 import { useNotification } from '@web3uikit/core';
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
-import { Web3StorageApi } from '@/constants';
+import { Web3StorageApi ,MockProfileAddress} from '@/constants';
 import { isRelayerResult } from "@lens-protocol/client";
 const AllowedImageTypes = ['jpeg', 'png', 'gif','jpg'];
+import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import profileAbiJson from '@/mockprofileabi.json';
 
 export default function Home() {
   /* local state variables to hold user's address and access token */
@@ -20,8 +23,8 @@ export default function Home() {
   const [token, setToken] = useState<string>();
   // var { lensClient } = useGlobalState();
   const setGlobalState = useSetGlobalState();
-
-
+  const [contract, setContract] = useState<ethers.Contract>();
+  const [handleToWrite, setHandle] = useState<string>();
   const lensClient = new LensClient({
     environment: development,
     storage: new LocalStorageProvider()
@@ -36,24 +39,54 @@ export default function Home() {
   const [imageObj, setImageObj] = useState<{ name: string; bucket: string }>();
 
   const [client, setClient] = useState<Web3Storage>();
-  useEffect(() => {
-
-    setClient(new Web3Storage({ token: Web3StorageApi }));
-    // setClient(s3);
-  }, []);
-  useEffect(() => {
-    /* when the app loads, check to see if the user has already connected their wallet */
-    async function checkLogin() {
-      if (await lensClient?.authentication?.isAuthenticated()==false) {
-
-        router.push('/pomp_lens/login');
-
-      }
-    }
+  const encoder = new TextEncoder();
+  const toBytes = (text: string | undefined ) => {
+  return encoder. encode(text);
   }
-  )
+  // const { config } = usePrepareContractWrite({
+  //   address: MockProfileAddress,
+  //   abi: profileAbiJson,
+  //   // chainId:80001,
+  //   functionName: 'proxyCreateProfile',
+  //   args: [address, handleToWrite,imageURL,"0x0000000000000000000000000000000000000000","0x00",imageURL],
+
+  // });
+
+  
+
+//   const { data, isLoading, isSuccess, write } = useContractWrite({...config, 
+//     onError(error) {
+//     console.log('Error', error)
+//   }
+// });
+  
+  async function createContract(){
+    const signer = new ethers.providers.Web3Provider((window as any).ethereum).getSigner()
+    setContract(new ethers.Contract(MockProfileAddress,profileAbiJson, signer))
+  }
+
+  useEffect(() => {
+
+    
+    createContract();
+    setClient(new Web3Storage({ token: Web3StorageApi }));
+        /* when the app loads, check to see if the user has already connected their wallet */
+        async function checkConnection() {
+          const provider = new ethers.providers.Web3Provider((window as any).ethereum);
+          const accounts = await provider.listAccounts();
+          if (accounts.length) {
+            setAddress(accounts[0]);
+          }
+          else{
+            router.push('/pomp_lens/login');
+          }
+        }
+        checkConnection();
+    // setClient(s3);
+  }, [router]);
 
   async function finishForm(event :any){
+
     if (imageURL == null){
       notification({
         type: 'warning',
@@ -63,27 +96,18 @@ export default function Home() {
       });
       return
     }
+    console.log({to:ethers.utils.getAddress(address!), handle:handleToWrite,imageURI:imageURL,followModule:ethers.utils.getAddress("0x0000000000000000000000000000000000000000"),followModuleInitData:"0x00",followNFTURI:imageURL})
+    var res = await contract!.proxyCreateProfile({to:ethers.utils.getAddress(address!), handle:event.handle,imageURI:imageURL,followModule:ethers.utils.getAddress("0x0000000000000000000000000000000000000000"),followModuleInitData:"0x00",followNFTURI:imageURL});
+    if(res.hash){
+      notification({
+        type: 'success',
+        message: 'Profile created, please login',
 
-
-      // lensClient is an authenticated instance of LensClient
-
-      const profileCreateResult = await lensClient.profile.create({ 
-        handle: event.handle,
+        position: 'topR'
         
-          // other request args 
       });
-
-      // profileCreateResult is a Result object
-      const profileCreateResultValue = profileCreateResult.unwrap();
-
-      if (!isRelayerResult(profileCreateResultValue)) {
-        console.log(`Something went wrong`, profileCreateResultValue);
-        return;
-      }
-
-      console.log(
-        `Transaction was successfuly broadcasted with txId ${profileCreateResultValue.txId}`
-      );
+      router.push('/pomp_lens/login');
+    }
   }
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     setShowWarning(false);
@@ -112,11 +136,11 @@ export default function Home() {
 
         
             <Form onFinish={finishForm}>
-            <Form.Item name='Address' label='Ethereum Address' rules={[{ required: true }]}>
+            {/* <Form.Item name='Address' label='Ethereum Address' rules={[{ required: true }]}>
               <Input placeholder='Address' id="Address" type='text' />
-            </Form.Item>
-            <Form.Item name='Handle' label='Handle' rules={[{ required: true }]}>
-                <Input placeholder='Handle' id="Handle" type='text' />
+            </Form.Item> */}
+            <Form.Item name='handle' label='handle' rules={[{ required: true }]}>
+                <Input placeholder='handle' id="handle" type='text' />
             </Form.Item>
 
 

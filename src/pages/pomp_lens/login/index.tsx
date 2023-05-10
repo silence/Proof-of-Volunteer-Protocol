@@ -118,9 +118,16 @@ export default function Home() {
         {!address && <Button onClick={connect}>Connect</Button>}
         {/* if the user has connected their wallet but has not yet authenticated, show them a login button */}
         {address && !token && (
-          <div onClick={login}>
+         <div>        
+           <div onClick={login}>
             <Button>Login</Button>
           </div>
+          <div onClick={()=>router.push('/pomp_lens/signup')}>
+            <Button>Signup</Button>
+          </div>
+        </div>
+
+          
         )}
         {/* once the user has authenticated, show them a success message */}
         {address && token && <h2>Successfully signed in!</h2>}
