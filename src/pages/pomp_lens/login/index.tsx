@@ -7,50 +7,36 @@ import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import { LensClient, development } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
 import LocalStorageProvider from '../storage';
+import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
+import { useAccount ,useSignMessage} from 'wagmi';
 
 export default function Home() {
   /* local state variables to hold user's address and access token */
-  const [address, setAddress] = useState<string>();
+  
   const [token, setToken] = useState<string>();
   // var { lensClient } = useGlobalState();
   const setGlobalState = useSetGlobalState();
   const router = useRouter();
-
+  const { isConnected,address } = useAccount();
   const lensClient = new LensClient({
     environment: development,
     storage: new LocalStorageProvider()
   });
+  const {  signMessageAsync } = useSignMessage()
   useEffect(() => {
     /* when the app loads, check to see if the user has already connected their wallet */
     async function checkLogin() {
-      if (await lensClient?.authentication?.isAuthenticated()) {
+      if ( isConnected && await lensClient?.authentication?.isAuthenticated()) {
         console.log('Already login');
 
-        router.push('/pomp_lens/profile');
+        // router.push('/pomp_lens/profile');
       } else {
         console.log('didnt login');
       }
     }
-
-    async function checkConnection() {
-      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-      const accounts = await provider.listAccounts();
-      if (accounts.length) {
-        setAddress(accounts[0]);
-      }
-    }
-
-    checkConnection();
     checkLogin();
   }, [lensClient?.authentication, router]);
 
-  async function connect() {
-    /* this allows the user to connect their wallet */
-    const account = await (window as any).ethereum.send('eth_requestAccounts');
-    if (account.result.length) {
-      setAddress(account.result[0]);
-    }
-  }
 
   /////// this function didnt work
   useEffect(() => {
@@ -64,6 +50,8 @@ export default function Home() {
       });
     }
   }, [token, router]);
+
+
   // async function login() {
   //   try {
   //     /* first request the challenge from the API server */
@@ -92,20 +80,23 @@ export default function Home() {
   // }
   async function login() {
     try {
-      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-      const signer = provider.getSigner();
 
-      const address = await signer.getAddress();
 
-      const challenge = await lensClient.authentication.generateChallenge(address);
-      const signature = await signer.signMessage(challenge);
+      const challenge = await lensClient.authentication.generateChallenge(address?.toString()!);
 
-      await lensClient.authentication.authenticate(address, signature);
+      
+      // const signature = await signer.signMessage(challenge);
+      const signature = await signMessageAsync({
+        message: challenge
+      })
 
+      await lensClient.authentication.authenticate(address?.toString()!, signature?.toString()!);
+      
       // check the state with
       if (await lensClient.authentication.isAuthenticated()) {
         // setGlobalState((pre) => ({ ...pre, lensClient }));
         setToken('Success');
+        console.log("Success")
       }
     } catch (err) {
       console.log('Error signing in: ', err);
@@ -114,20 +105,19 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        {/* if the user has not yet connected their wallet, show a connect button */}
-        {!address && <Button onClick={connect}>Connect</Button>}
-        {/* if the user has connected their wallet but has not yet authenticated, show them a login button */}
-        {address && !token && (
-         <div>        
-           <div onClick={login}>
-            <Button>Login</Button>
+          <div style={{ textAlign: 'center', margin: '32px 0px' }}>
+            <Web3NetworkSwitch />
+            {/* <Web3Button icon="show" label="Connect Wallet" balance="show"></Web3Button> */}
           </div>
+        {/* if the user has connected their wallet but has not yet authenticated, show them a login button */}
+        {isConnected && !token && (
+         <div>        
+          <Button onClick={login}> Login</Button>
           <div onClick={()=>router.push('/pomp_lens/signup')}>
             <Button>Signup</Button>
           </div>
-        </div>
 
-          
+        </div>
         )}
         {/* once the user has authenticated, show them a success message */}
         {address && token && <h2>Successfully signed in!</h2>}

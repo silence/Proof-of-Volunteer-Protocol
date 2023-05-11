@@ -10,7 +10,7 @@ import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import LocalStorageProvider from '../storage';
 export interface TakePhotoPageProps {}
 import { LensClient, development } from '@lens-protocol/client';
-import { ethers } from 'ethers';
+// import { ethers } from 'ethers';
 const AllowedImageTypes = ['jpeg', 'png', 'gif'];
 import { useRouter } from 'next/router';
 import { useNotification } from '@web3uikit/core';
@@ -19,18 +19,20 @@ import {
   PublicationMainFocus,
   MetadataAttributeInput
 } from '../../../interfaces/publication';
-import abi from '../lens_hub_abi.json' assert { type: 'json' };
-
-import Web3 from 'web3';
+import { Web3Button } from '@web3modal/react'
+import { useAccount, useContract,useSignTypedData } from 'wagmi'
+import { TypedDataDomain } from 'ethers';
 
 const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   const router = useRouter();
+  const {address , isConnected }= useAccount();
   const [err, setErr] = useState<string>();
   const [showWarning, setShowWarning] = useState<boolean>(false);
   const [imageURL, setImageURL] = useState<string>();
   const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
   const notification = useNotification();
-  const [imageObj, setImageObj] = useState<{ name: string; bucket: string }>();
+
+  const { data, isError, isLoading, isSuccess, signTypedDataAsync } = useSignTypedData()
 
   const [client, setClient] = useState<Web3Storage>();
   const setGlobalState = useSetGlobalState();
@@ -53,11 +55,16 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   }, []);
 
   const postNFT = async () => {
-    const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-    const accounts = await provider.listAccounts();
-    const address = accounts[0];
+    if (!imageURL){
+        notification({
+                type: 'warning',
+                title: 'Please Upload Image',
+                position: 'topR'
+        }
+        )
+    }
     const allOwnedProfiles = await lensClient.profile.fetchAll({
-      ownedBy: [address],
+      ownedBy: [address?.toString()!],
       limit: 1
     });
     const profile = allOwnedProfiles.items[0];
@@ -144,7 +151,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           },
           recipients: [
             {
-              recipient: address,
+              recipient: address?.toString()!,
               split: 20
             },
             {
@@ -163,23 +170,30 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
 
     if (typedDataResult) {
       console.log(typedDataResult);
-      const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-      const signer = provider.getSigner();
+
       /* ask the user to sign a message with the challenge info returned from the server */
 
-      var result = typedDataResult.unwrap();
-      var typedData = result.typedData;
+      const result = typedDataResult.unwrap() ;
+      const d = result.typedData.domain
+      const dTmp ={
+        chainId:d.chainId,
+        name: d.name,
+        
+        verifyingContract: d.verifyingContract as '0x${string}',
+        version: d.version
+    }
+      const sig = await signTypedDataAsync({
+        domain:dTmp,
+        types:result.typedData.types,
+        value:result.typedData.value
+      })
 
-      const signature = await signer._signTypedData(
-        result.typedData.domain,
-        result.typedData.types,
-        result.typedData.value
-      );
-      console.log(signature);
+
+      console.log(sig);
 
       const broadcastResult = await lensClient.transaction.broadcast({
         id: result.id,
-        signature: signature,
+        signature: sig,
       });
       console.log(broadcastResult);
      
@@ -203,7 +217,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     //       deadline: typedData.value.deadline
     //     }
     //   });
-
+      
       const res = Dialog.alert({
         content: 'Mint Success!',
         confirmText: 'Got it',
@@ -308,6 +322,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
+        <Web3Button />
         <Card style={{ width: '100%' }}>
           <Result
             icon={<SmileOutline />}

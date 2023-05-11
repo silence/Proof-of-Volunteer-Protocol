@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
-import { ethers } from 'ethers';
+
 import { client, challenge, authenticate } from '../../api/lens_api';
 import styles from '@/styles/common.module.css';
 import {
@@ -25,13 +25,17 @@ import {
   PublicationMainFocus,
   MetadataAttributeInput
 } from '../../../interfaces/publication';
+
+import { useAccount, useContract,useSignTypedData } from 'wagmi'
+
+
 // 0x7ebd
 export default function Home() {
   /* local state variables to hold user's address and access token */
   const [profile, setProfile] = useState();
   const [publications, setPublications] = useState();
   const [token, setToken] = useState();
-  const [address, setAddress]= useState();
+  const {address , isConnected }= useAccount();
   const lensClient = useMemo(
     () =>
       new LensClient({
@@ -41,17 +45,13 @@ export default function Home() {
     []
   );
   const router = useRouter();
-  async function fetchAddress(){
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-    const addressTmp = accounts[0];
-    setAddress(addressTmp);
-    return addressTmp
-  }
+
+  const { data, isError, isLoading, isSuccess, signTypedDataAsync } = useSignTypedData()
+
   async function fetchProfile() {
-    const addressTmp = await fetchAddress()
+    
     const allOwnedProfiles = await lensClient.profile.fetchAll({
-      ownedBy: [addressTmp],
+      ownedBy: [address],
       limit: 1
     });
     setProfile(allOwnedProfiles.items[0]); // cannot access profile directly for next step, it will return undefined
@@ -80,10 +80,10 @@ export default function Home() {
       },
       profileIds:profileList
     });
+
     setPublications(publications.items);
+    console.log(publications.items)
   }
-
-
   useEffect(() => {
     fetchPublications();
   }, [lensClient]); 
@@ -95,20 +95,26 @@ export default function Home() {
       publicationId: id
     });
         // sign and broadcast the typed data
-        const data = typedDataResult.unwrap();
+        const result = typedDataResult.unwrap();
     
         // sign with the wallet
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const signedTypedData = await signer._signTypedData(
-          data.typedData.domain,
-          data.typedData.types,
-          data.typedData.value
-        );
-        
+        const d = result.typedData.domain
+        const dTmp ={
+          chainId:d.chainId,
+          name: d.name,
+          
+          verifyingContract: d.verifyingContract,
+          version: d.version
+      }
+        const sig = await signTypedDataAsync({
+          domain:dTmp,
+          types:result.typedData.types,
+          value:result.typedData.value
+        })
+
         const broadcastResult = await lensClient.transaction.broadcast({
           id: data.id,
-          signature: signedTypedData,
+          signature: sig,
         });
         console.log(broadcastResult);
 
@@ -135,7 +141,8 @@ export default function Home() {
                     
                     <p>{pub.metadata.content}</p>
                     <Image alt="" src={pub.metadata.media[0].original.url}></Image>
-                    <Button  style={{float: "right"}}  onClick={()=>collectPublication(pub.id)}>Support Us</Button>
+                    
+                    <Button  style={{float: "right"}}  onClick={()=>collectPublication(pub.id)} disabled={pub.profile.ownedBy==address}>Support Us</Button>
                   </div>
                 ))
               ) : (

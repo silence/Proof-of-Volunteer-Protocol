@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useState } from 'react';
 import { ethers } from 'ethers';
-import { client, challenge, authenticate } from '../../api/lens_api';
+
 import styles from '@/styles/common.module.css';
 import {
   Card,
@@ -19,7 +19,10 @@ import { LensClient, development } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
 import LocalStorageProvider from '../storage';
 import Link from 'next/link';
-import {mainProfile} from '../../../constants/index'
+import {mainProfile, mainProfileAddress} from '../../../constants/index'
+import { Web3Button } from '@web3modal/react'
+import { useAccount, useContract,useSignTypedData } from 'wagmi'
+
 
 // 0x7ebd
 export default function Home() {
@@ -27,7 +30,7 @@ export default function Home() {
   const [profile, setProfile] = useState();
   const [publications, setPublications] = useState();
   const [token, setToken] = useState();
-  const [address, setAddress]= useState();
+  const { address, isConnected } = useAccount()
   const lensClient = useMemo(
     () =>
       new LensClient({
@@ -37,17 +40,12 @@ export default function Home() {
     []
   );
   const router = useRouter();
-  async function fetchAddress(){
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const accounts = await provider.listAccounts();
-    const addressTmp = accounts[0];
-    setAddress(addressTmp);
-    return addressTmp
-  }
+  // sign with the wallet
+  const { data, isError, isLoading, isSuccess, signTypedDataAsync } = useSignTypedData()
+
   async function fetchProfile() {
-    const addressTmp = await fetchAddress()
     const allOwnedProfiles = await lensClient.profile.fetchAll({
-      ownedBy: [addressTmp],
+      ownedBy: [address],
       limit: 1
     });
     setProfile(allOwnedProfiles.items[0]); // cannot access profile directly for next step, it will return undefined
@@ -67,7 +65,11 @@ export default function Home() {
 
   async function checkFollowing(){
     
-    console.log(address);
+    console.log(mainProfileAddress);
+    if (address.toString().toLowerCase() == mainProfileAddress.toLowerCase()){
+      return
+    }
+       
     const res = await lensClient.profile.doesFollow({
       followInfos:[{
           followerAddress:address,
@@ -77,8 +79,8 @@ export default function Home() {
   console.log(res)
   if (res.follows==false){
     
-    const provider = new ethers.providers.Web3Provider(window.ethereum);
-    const signer = provider.getSigner();
+    // const provider = new ethers.providers.Web3Provider(window.ethereum);
+    // const signer = provider.getSigner();
     const followTypedDataResult = await lensClient.profile.createFollowTypedData({
       follow: [
         {
@@ -88,18 +90,24 @@ export default function Home() {
     });
     
     // sign and broadcast the typed data
-    const data = followTypedDataResult.unwrap();
+    const dataT = followTypedDataResult.unwrap();
     
-    // sign with the wallet
-    const signedTypedData = await signer._signTypedData(
-      data.typedData.domain,
-      data.typedData.types,
-      data.typedData.value
-    );
+    const sig = await signTypedDataAsync(
+    {
+      domain:dataT.typedData.domain,
+      types:dataT.typedData.types,
+      value:dataT.typedData.value,
+    })
+
+    // const signedTypedData = await signer._signTypedData(
+    //   data.typedData.domain,
+    //   data.typedData.types,
+    //   data.typedData.value
+    // );
     
     const broadcastResult = await lensClient.transaction.broadcast({
-      id: data.id,
-      signature: signedTypedData,
+      id: dataT.id,
+      signature: sig,
     });
     console.log(broadcastResult);
   }
@@ -113,35 +121,40 @@ export default function Home() {
     }
   },[address,profile])
   async function collectPublication(id){
-    console.log("#######")
-    console.log(id)
-    const typedDataResult = await lensClient.publication.createCollectTypedData({
-      publicationId: id
-    });
-        // sign and broadcast the typed data
-        const data = typedDataResult.unwrap();
-    
-        // sign with the wallet
-        const provider = new ethers.providers.Web3Provider(window.ethereum);
-        const signer = provider.getSigner();
-        const signedTypedData = await signer._signTypedData(
-          data.typedData.domain,
-          data.typedData.types,
-          data.typedData.value
-        );
+
+      const typedDataResult = await lensClient.publication.createCollectTypedData({
+        publicationId: id
+      });
+      const result = typedDataResult.unwrap();
+      
+      // sign with the wallet
+      const d = result.typedData.domain
+      const dTmp ={
+        chainId:d.chainId,
+        name: d.name,
         
-        const broadcastResult = await lensClient.transaction.broadcast({
-          id: data.id,
-          signature: signedTypedData,
-        });
-        console.log(broadcastResult);
+        verifyingContract: d.verifyingContract,
+        version: d.version
+    }
+      const sig = await signTypedDataAsync({
+        domain:dTmp,
+        types:result.typedData.types,
+        value:result.typedData.value
+      })
 
-
+      const broadcastResult = await lensClient.transaction.broadcast({
+        id: data.id,
+        signature: sig,
+      });
+      console.log(broadcastResult);
   }
   return (
     <div className={styles.app}>
       <div className={styles.body}>
+        <Web3Button />
         {profile ? (
+
+          
           <div className="pt-20">
             <div className="flex flex-col justify-center items-center">
               <Image
@@ -159,7 +172,7 @@ export default function Home() {
                     
                     <p>{pub.metadata.content}</p>
                     <Image alt="" src={pub.metadata.media[0].original.url}></Image>
-                    <Button  style={{float: "right"}}  onClick={()=>collectPublication(pub.id)}>Support Us</Button>
+                    <Button  style={{float: "right"}}  onClick={()=>collectPublication(pub.id)} disabled={pub.profile.ownedBy==address}>Support Us</Button>
                   </div>
                 ))
               ) : (
