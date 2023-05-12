@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { ethers } from 'ethers';
+import { BigNumber, ethers } from 'ethers';
 
 import { client, challenge, authenticate } from '../../api/lens_api';
 import styles from '@/styles/common.module.css';
@@ -12,37 +12,68 @@ import { Web3Storage } from 'web3.storage';
 import { useNotification } from '@web3uikit/core';
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
 import { Web3StorageApi ,MockProfileAddress} from '@/constants';
-import { isRelayerResult } from "@lens-protocol/client";
 const AllowedImageTypes = ['jpeg', 'png', 'gif','jpg'];
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import profileAbiJson from '@/mockprofileabi.json';
+import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 
 export default function Home() {
   /* local state variables to hold user's address and access token */
-  const [address, setAddress] = useState<string>();
-  const [token, setToken] = useState<string>();
-  // var { lensClient } = useGlobalState();
-  const setGlobalState = useSetGlobalState();
-  const [contract, setContract] = useState<ethers.Contract>();
-  const [handleToWrite, setHandle] = useState<string>();
+  const { address, isConnected } = useAccount()
+
   const lensClient = new LensClient({
     environment: development,
     storage: new LocalStorageProvider()
   });
-
+  
   const router = useRouter();
   const [err, setErr] = useState<string>();
   const [showWarning, setShowWarning] = useState<boolean>(false);
-  const [imageURL, setImageURL] = useState<string>();
+  const [imageURL, setImageURL] = useState<string>("abc");
   const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
   const notification = useNotification();
-  const [imageObj, setImageObj] = useState<{ name: string; bucket: string }>();
-
+  const [handle,setHandle] = useState<string>("http://123");
   const [client, setClient] = useState<Web3Storage>();
+  const [form, setFinishForm] = useState<Boolean>(false);
   const encoder = new TextEncoder();
-  const toBytes = (text: string | undefined ) => {
-  return encoder. encode(text);
-  }
+
+  useEffect(() => {
+    setClient(new Web3Storage({ token: Web3StorageApi }));
+  }, []);
+
+  const { config, error } = usePrepareContractWrite({
+    address:MockProfileAddress,
+    abi: profileAbiJson,
+    functionName: 'proxyCreateProfile',
+    
+    args:[{to:address!.toString(),handle:handle,imageURI:imageURL,followModule:"0x0000000000000000000000000000000000000000",followModuleInitData:"0x00",followNFTURI:imageURL}],
+    overrides:{
+      gasLimit: BigNumber.from(10e5)
+    }
+  })
+  const { write, writeAsync } = useContractWrite({...config, 
+    
+    onSettled(data, error) {
+        if (!error){
+          notification({
+            type: 'success',
+            message: 'Profile created, please login',
+    
+            position: 'topR'
+            
+          });
+          console.log(data)
+          router.push('/pomp_lens/login');
+        }
+        else{
+          notification({
+            type: 'error',
+            message: error.message,
+            position: 'topR'
+          });
+        }
+   }})
+
   // const { config } = usePrepareContractWrite({
   //   address: MockProfileAddress,
   //   abi: profileAbiJson,
@@ -59,57 +90,32 @@ export default function Home() {
 //     console.log('Error', error)
 //   }
 // });
-  
-  async function createContract(){
-    const signer = new ethers.providers.Web3Provider((window as any).ethereum).getSigner()
-    setContract(new ethers.Contract(MockProfileAddress,profileAbiJson, signer))
-  }
-
-  useEffect(() => {
-
     
-    createContract();
-    setClient(new Web3Storage({ token: Web3StorageApi }));
-        /* when the app loads, check to see if the user has already connected their wallet */
-        async function checkConnection() {
-          const provider = new ethers.providers.Web3Provider((window as any).ethereum);
-          const accounts = await provider.listAccounts();
-          if (accounts.length) {
-            setAddress(accounts[0]);
-          }
-          else{
-            router.push('/pomp_lens/login');
-          }
-        }
-        checkConnection();
-    // setClient(s3);
-  }, [router]);
+  useEffect(()=>{
+    if (write && form){
+      console.log(imageURL)
+      write!()
+    }
+        
+    if(form)
+      setFinishForm(false)
+  },[handle,form])
 
-  async function finishForm(event :any){
-
-    if (imageURL == null){
+  async function finishForm(event : any){
+    setFinishForm(false)
+    if (imageURL == "abc" || event.handle == null){
       notification({
         type: 'warning',
-        message: 'Please upload image',
+        message: 'Please upload image/ fill in handle',
 
         position: 'topR'
       });
       return
     }
-    console.log({to:ethers.utils.getAddress(address!), handle:handleToWrite,imageURI:imageURL,followModule:ethers.utils.getAddress("0x0000000000000000000000000000000000000000"),followModuleInitData:"0x00",followNFTURI:imageURL})
-    var res = await contract!.proxyCreateProfile({to:ethers.utils.getAddress(address!), handle:event.handle,imageURI:imageURL,followModule:ethers.utils.getAddress("0x0000000000000000000000000000000000000000"),followModuleInitData:"0x00",followNFTURI:imageURL});
-    if(res.hash){
-      notification({
-        type: 'success',
-        message: 'Profile created, please login',
-
-        position: 'topR'
-        
-      });
-      router.push('/pomp_lens/login');
-    }
+    setHandle(event.handle)
+    setFinishForm(true)
   }
-  const handleUpload = async (file: File): Promise<ImageUploadItem> => {
+  const handleUpload = async (file: File) : Promise<ImageUploadItem> =>{
     setShowWarning(false);
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
 
@@ -117,12 +123,13 @@ export default function Home() {
       if (client) {
         const rootCid = await client.put([file]);
         var ipfsImageUrl = `https://${rootCid}.ipfs.w3s.link/${file.name}`;
-
+      
         setImageURL(ipfsImageUrl);
-    }
+      }
     } else {
       setShowWarning(true);
     }
+
     return {
       url: URL.createObjectURL(file)
     };
@@ -132,9 +139,10 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
+        
         <Card>
 
-        
+        <Web3Button />
             <Form onFinish={finishForm}>
             {/* <Form.Item name='Address' label='Ethereum Address' rules={[{ required: true }]}>
               <Input placeholder='Address' id="Address" type='text' />
@@ -176,7 +184,7 @@ export default function Home() {
               <CameraOutline style={{ fontSize: 96 }} />
             </div>
           </ImageUploader>
-          {showWarning && <Tag>Only types: {AllowedImageTypes.join(', ')} are allowed</Tag>}
+          {showWarning && <Tag>Please change to a unique handle</Tag>}
             </div>
 
             <Button type='submit' color='primary' style={{float: "right"}} >Submit</Button>

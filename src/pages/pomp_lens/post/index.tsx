@@ -1,15 +1,15 @@
 import React, { useEffect, useState } from 'react';
-import { Card, Result, ImageUploader, ImageUploadItem, Dialog, Tag, Button } from 'antd-mobile';
+import { Card, TextArea,Form ,Result, ImageUploader, ImageUploadItem, Dialog, Tag, Button } from 'antd-mobile';
 import { SmileOutline, CameraOutline } from 'antd-mobile-icons';
 import styles from '@/styles/common.module.css';
 import Link from 'next/link';
-import { Web3StorageApi } from '@/constants';
+import { Web3StorageApi, EventName } from '@/constants';
 // import { S3 } from '@aws-sdk/client-s3';
 import { Web3Storage } from 'web3.storage';
 import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
 import LocalStorageProvider from '../storage';
 export interface TakePhotoPageProps {}
-import { LensClient, development } from '@lens-protocol/client';
+import { LensClient, ProfileFragment, development } from '@lens-protocol/client';
 // import { ethers } from 'ethers';
 const AllowedImageTypes = ['jpeg', 'png', 'gif'];
 import { useRouter } from 'next/router';
@@ -23,15 +23,18 @@ import { Web3Button } from '@web3modal/react'
 import { useAccount, useContract,useSignTypedData } from 'wagmi'
 import { TypedDataDomain } from 'ethers';
 
+
+
 const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   const router = useRouter();
   const {address , isConnected }= useAccount();
   const [err, setErr] = useState<string>();
   const [showWarning, setShowWarning] = useState<boolean>(false);
   const [imageURL, setImageURL] = useState<string>();
+  const [profile,setProfile] = useState<ProfileFragment>();
   const [fileList, setFileList] = useState<ImageUploadItem[]>([]);
   const notification = useNotification();
-
+  
   const { data, isError, isLoading, isSuccess, signTypedDataAsync } = useSignTypedData()
 
   const [client, setClient] = useState<Web3Storage>();
@@ -49,12 +52,12 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     //   },
     //   region: 'us-west-2'
     // });
-
+    fetchProfile();
     setClient(new Web3Storage({ token: Web3StorageApi }));
     // setClient(s3);
   }, []);
 
-  const postNFT = async () => {
+  const postNFT = async (event : any) => {
     if (!imageURL){
         notification({
                 type: 'warning',
@@ -62,12 +65,13 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
                 position: 'topR'
         }
         )
+        return
     }
-    const allOwnedProfiles = await lensClient.profile.fetchAll({
-      ownedBy: [address?.toString()!],
-      limit: 1
-    });
-    const profile = allOwnedProfiles.items[0];
+    // const allOwnedProfiles = await lensClient.profile.fetchAll({
+    //   ownedBy: [address?.toString()!],
+    //   limit: 1
+    // });
+    // const profile = allOwnedProfiles.items[0];
 
     // const attribute1:MetadataAttributeInput = {
     //     traitType: "Meetup Time",
@@ -75,7 +79,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     //   }
 
     const metadata = {
-      appId: 'POMP',
+      appId: 'HelpAndGrow',
       attributes: [
         {
           traitType: 'Meetup Time',
@@ -83,7 +87,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
         },
         {
           traitType: 'Contact',
-          value: profile.handle
+          value: profile!.handle
         },
         {
           traitType: 'Meet',
@@ -98,8 +102,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           value: 'New Hope'
         }
       ],
-      content: 'It is a great honor to meet Jerry today!',
-      description: 'Super happy to meet Dalao! ',
+      content: profile!.handle.split(".")[0]+":" + event.message,
+      description: 'Super happy to meet! ',
       locale: 'en',
       mainContentFocus: PublicationMainFocus.Image,
       image: imageURL!,
@@ -116,7 +120,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       version: '2.0.0'
     };
     
-    console.log(metadata.media);
+    console.log(profile!.handle.split(".")[0]+":" + event.message);
     const validateResult = await lensClient.publication.validateMetadata(metadata);
 
     if (!validateResult.valid) {
@@ -136,7 +140,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
 
     // or with typedData that require signature and broadcasting
     const typedDataResult = await lensClient.publication.createPostTypedData({
-      profileId: profile.id,
+      profileId: profile!.id,
       contentURI: contentURI!,
       //   collectModule: {
       //     freeCollectModule: {
@@ -267,9 +271,23 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       //   });
     }
   };
+  async function fetchProfile() {
+    const allOwnedProfiles = await lensClient.profile.fetchAll({
+      ownedBy: [address!.toString()],
+      limit: 1
+    });
+    
+    setProfile(allOwnedProfiles.items[0]);
+    console.log(allOwnedProfiles.items[0])
+    // form.setFieldsValue({
+    //     id:"message",
+    //     Value: allOwnedProfiles.items[0].handle.split(".")[0] + " met with ___ today at "+EventName+" , it was great fun!"
+    // })
+  }
 
   const handleUpload = async (file: File): Promise<ImageUploadItem> => {
     setShowWarning(false);
+    var ipfsImageUrl = ''
     if (AllowedImageTypes.map((t) => 'image/' + t).includes(file.type)) {
       // if (s3client) {
       //   const buckets = await s3client.listBuckets({});
@@ -289,9 +307,10 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       //   }
       // }
       console.log('Upload Started');
+      
       if (client) {
         const rootCid = await client.put([file]);
-        var ipfsImageUrl = `https://${rootCid}.ipfs.w3s.link/${file.name}`;
+        ipfsImageUrl = `https://${rootCid}.ipfs.w3s.link/${file.name}`;
 
         setImageURL(ipfsImageUrl);
         //   if (typedDataResult){
@@ -315,8 +334,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
       setShowWarning(true);
     }
     return {
-      url: URL.createObjectURL(file)
-    };
+        url: URL.createObjectURL(file)
+      };
   };
 
   return (
@@ -327,13 +346,19 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           <Result
             icon={<SmileOutline />}
             status="success"
-            title="Thank you for joining Help and Grow Annual Meetup"
+            title={"Thank you for joining " + EventName}
           />
 
           {Boolean(fileList?.length) ? (
-            <Button block color="primary" onClick={postNFT}>
-              Post
-            </Button>
+            <Form  onFinish={postNFT}>
+                <Form.Item name='message' label='message' rules={[{ required: true }]}>
+                    <TextArea  placeholder='Please enter who u meet with' id="message"  />
+                 </Form.Item>
+                <Button block color="primary" type='submit'>
+                Post
+                </Button>
+            </Form>
+
           ) : (
             <></>
             // <div style={{ textAlign: 'center' }}>

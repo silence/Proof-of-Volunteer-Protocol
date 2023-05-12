@@ -5,3 +5,4 @@ export const povp_Contract_Address = '0x8b734ea22bb0De288a87394A20596A81ba53A57A
 export const mainProfile = '0x7ebd';
 export const mainProfileAddress = "0x4B162DBa01943Bd8CD8af668bE72fB769999aC83";
 export const MockProfileAddress = '0x420f0257D43145bb002E69B14FF2Eb9630Fc4736'
+export const EventName= "Help&Grow Digital Empowerment for Singapore Session #1"

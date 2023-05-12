@@ -25,6 +25,7 @@ import {
   PublicationMainFocus,
   MetadataAttributeInput
 } from '../../../interfaces/publication';
+import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 
 import { useAccount, useContract,useSignTypedData } from 'wagmi'
 
@@ -123,6 +124,7 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
+        <Web3Button/>
         {profile ? (
           <div className="pt-20">
             <div className="flex flex-col justify-center items-center">

@@ -17,13 +17,13 @@ if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 // 2. Configure wagmi client
-const chains = [polygon, polygonMumbai];
+const chains = [polygonMumbai,polygon];
 
 const { provider } = configureChains(chains, [walletConnectProvider({ projectId })]);
 const wagmiClient = createClient({
   autoConnect: true,
   connectors: modalConnectors({
-    version: '1',
+    version: '2',
     appName: 'web3Modal',
     chains,
     projectId
