@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import LocalStorageProvider from '../storage';
 import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount ,useSignMessage} from 'wagmi';
-import {WalletOptions} from "@/pages/components/walletoptions"
+import {WalletOptions} from "@/components/walletoptions"
 
 
 export default function Home() {

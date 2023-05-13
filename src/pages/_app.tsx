@@ -18,7 +18,7 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
 import { alchemyProvider } from 'wagmi/providers/alchemy'
 import { publicProvider } from 'wagmi/providers/public'
 import {alchemyProviderKey} from "@/constants"
-import {WalletOptions} from "./components/walletoptions"
+import {WalletOptions} from "../components/components/walletoptions"
 // 1. Get projectID at https://cloud.walletconnect.com
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable');
