@@ -31,7 +31,7 @@ const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
 // const { provider } = configureChains([polygonMumbai,polygon], [walletConnectProvider({ projectId })]);
 const { chains, provider, webSocketProvider } = configureChains(
-  [polygonMumbai,polygon],
+  [polygonMumbai],
   [alchemyProvider({ apiKey: alchemyProviderKey }), publicProvider()],
 )
 const client = createClient ({

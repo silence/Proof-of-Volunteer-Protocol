@@ -124,6 +124,7 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
+        
         <Connected/>
         {profile ? (
           <div className="pt-20">
@@ -160,6 +161,12 @@ export default function Home() {
         ) : (
           <p>Loading Profile</p>
         )}
+          <Link href="/pomp_lens/profile">
+                <Button block >
+                  Profile
+                </Button>
+          </Link>
+        
         <div className="pt-20"></div>
       </div>
     </div>

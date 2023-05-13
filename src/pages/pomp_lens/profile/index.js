@@ -183,6 +183,11 @@ export default function Home() {
                   Post
                 </Button>
               </Link>
+              <Link href="/pomp_lens/feed">
+                <Button block >
+                  Feed
+                </Button>
+              </Link>
             </div>
           </div>
         ) : (
