@@ -65,7 +65,7 @@ export default function Home() {
 
   async function checkFollowing(){
     
-    console.log(mainProfileAddress);
+    
     if (address.toString().toLowerCase() == mainProfileAddress.toLowerCase()){
       return
     }
@@ -76,8 +76,7 @@ export default function Home() {
           profileId:mainProfile
         }
   ]});
-  console.log(res)
-  if (res.follows==false){
+  if (res[0].follows==false){
     
     // const provider = new ethers.providers.Web3Provider(window.ethereum);
     // const signer = provider.getSigner();
@@ -117,7 +116,7 @@ export default function Home() {
   }, [lensClient]); 
   useEffect(()=>{
     if (address!==null && profile!=null ){
-      checkFollowing();
+        checkFollowing();
     }
   },[address,profile])
   async function collectPublication(id){

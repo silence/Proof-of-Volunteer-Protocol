@@ -15,7 +15,7 @@ import {
   Image
 } from 'antd-mobile';
 import { useSetGlobalState, useGlobalState } from '@/hooks/globalContext';
-import { LensClient, development } from '@lens-protocol/client';
+import { LensClient, development,PublicationSortCriteria } from '@lens-protocol/client';
 import { useRouter } from 'next/router';
 import LocalStorageProvider from '../storage';
 import Link from 'next/link';
@@ -59,31 +59,46 @@ export default function Home() {
     return allOwnedProfiles.items[0];
   }
 
+  // async function fetchPublications() {
+  //   fetchProfile();
+  //   const result = await lensClient.profile.allFollowers({
+  //     profileId: mainProfile,
+  //   });
+    
+  //   var profileList = []
+  //   for (var i =0;i<result.items.length;i++){
+  //     profileList.push(result.items[i].wallet.defaultProfile.id)
+  //   }
+  //   console.log(profileList);
+  //   const publications = await lensClient.publication.fetchAll({
+  //     metadata: {
+  //       locale: "en",
+        
+  //       mainContentFocus: [PublicationMainFocus.Image],
+  //       tags: {
+  //         oneOf: ["HelpAndGrow"],
+  //       },
+  //     },
+  //     profileIds:profileList
+  //   });
+
+  //   setPublications(publications.items);
+  //   console.log(publications.items)
+  // }
+
   async function fetchPublications() {
     fetchProfile();
-    const result = await lensClient.profile.allFollowers({
-      profileId: mainProfile,
-    });
-    
-    var profileList = []
-    for (var i =0;i<result.items.length;i++){
-      profileList.push(result.items[i].wallet.defaultProfile.id)
-    }
-    console.log(profileList);
-    const publications = await lensClient.publication.fetchAll({
-      metadata: {
-        locale: "en",
-        
-        mainContentFocus: [PublicationMainFocus.Image],
-        tags: {
-          oneOf: ["HelpAndGrow"],
-        },
+    const publications = await lensClient.explore.publications({
+      noRandomize:true,
+      metadata:{
+        tags:{
+          oneOf:["HelpAndGrow"]
+        }
       },
-      profileIds:profileList
-    });
-
+      sortCriteria: PublicationSortCriteria.Latest
+    })
+    
     setPublications(publications.items);
-    console.log(publications.items)
   }
   useEffect(() => {
     fetchPublications();
@@ -118,8 +133,6 @@ export default function Home() {
           signature: sig,
         });
         console.log(broadcastResult);
-
-
   }
   return (
     <div className={styles.app}>

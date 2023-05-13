@@ -9,8 +9,6 @@ import {
   import { useRouter } from 'next/router';
   export function Connected() {
     const { address, connector, isConnected } = useAccount()
-    const { data: ensAvatar } = useEnsAvatar({ address })
-    const { data: ensName } = useEnsName({ address })
     const { connect, connectors, error, isLoading, pendingConnector } =
       useConnect()
     const { disconnect } = useDisconnect()
