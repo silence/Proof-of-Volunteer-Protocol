@@ -9,6 +9,8 @@ import { useRouter } from 'next/router';
 import LocalStorageProvider from '../storage';
 import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 import { useAccount ,useSignMessage} from 'wagmi';
+import {WalletOptions} from "@/pages/components/walletoptions"
+
 
 export default function Home() {
   /* local state variables to hold user's address and access token */
@@ -106,7 +108,7 @@ export default function Home() {
     <div className={styles.app}>
       <div className={styles.body}>
           <div style={{ textAlign: 'center', margin: '32px 0px' }}>
-            <Web3NetworkSwitch />
+
             {/* <Web3Button icon="show" label="Connect Wallet" balance="show"></Web3Button> */}
           </div>
         {/* if the user has connected their wallet but has not yet authenticated, show them a login button */}
@@ -121,6 +123,7 @@ export default function Home() {
         )}
         {/* once the user has authenticated, show them a success message */}
         {address && token && <h2>Successfully signed in!</h2>}
+        <WalletOptions/>
       </div>
     </div>
   );

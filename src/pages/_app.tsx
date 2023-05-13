@@ -3,36 +3,70 @@ import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3mod
 import { Web3Modal } from '@web3modal/react';
 import type { AppProps } from 'next/app';
 import '@/styles/globals.css';
-import { configureChains, createClient, WagmiConfig } from 'wagmi';
+import { configureChains, createClient, WagmiConfig,useConnect,CreateClientConfig} from 'wagmi';
 import { polygon, polygonMumbai } from 'wagmi/chains';
 import { GlobalState } from '@/types/global';
 import { GlobalStateContext, SetGlobalStateContext } from '@/hooks/globalContext';
 import { NotificationProvider } from '@web3uikit/core';
-const GLOBAL_STATE_KEY = 'GLOBAL_STATE_KEY';
 
+
+const GLOBAL_STATE_KEY = 'GLOBAL_STATE_KEY';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
+import { InjectedConnector } from 'wagmi/connectors/injected'
+import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
+import { alchemyProvider } from 'wagmi/providers/alchemy'
+import { publicProvider } from 'wagmi/providers/public'
+import {alchemyProviderKey} from "@/constants"
+import {WalletOptions} from "./components/walletoptions"
 // 1. Get projectID at https://cloud.walletconnect.com
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
   throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable');
 }
+// https://dev.to/muratcanyuksel/connecting-to-different-web3-wallets-using-wagmish-and-reactjs-1ojp
+// wagmi only use 0.11
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
 
+
 // 2. Configure wagmi client
-const chains = [polygonMumbai,polygon];
 
-const { provider } = configureChains(chains, [walletConnectProvider({ projectId })]);
-const wagmiClient = createClient({
+// const { provider } = configureChains([polygonMumbai,polygon], [walletConnectProvider({ projectId })]);
+const { chains, provider, webSocketProvider } = configureChains(
+  [polygonMumbai,polygon],
+  [alchemyProvider({ apiKey: alchemyProviderKey }), publicProvider()],
+)
+const client = createClient ({
   autoConnect: true,
-  connectors: modalConnectors({
-    version: '2',
-    appName: 'web3Modal',
-    chains,
-    projectId
-  }),
-  provider
-});
+  connectors: [
+    new MetaMaskConnector({ chains }),
+    new CoinbaseWalletConnector({
+      chains,
+      options: {
+        appName: 'wagmi',
+      },
+    }),
+    new WalletConnectConnector({
+      chains,
+      options: {
+        qrcode: true
+      },
+    }),
+    new InjectedConnector({
+      chains,
+      options: {
+        name: 'Injected',
+        shimDisconnect: true,
+      },
+    }),
+  ],
+  provider,
+  webSocketProvider,
+}
+)
 
-// 3. Configure modal ethereum client
-const ethereumClient = new EthereumClient(wagmiClient, chains);
+
+// // 3. Configure modal ethereum client
+// const ethereumClient = new EthereumClient(wagmiClient, chains);
 
 // 4. Wrap your app with WagmiProvider and add <Web3Modal /> component
 export default function App({ Component, pageProps }: AppProps) {
@@ -58,12 +92,13 @@ export default function App({ Component, pageProps }: AppProps) {
       <GlobalStateContext.Provider value={globalState}>
         <SetGlobalStateContext.Provider value={setGlobalState}>
           {ready && (
-            <WagmiConfig client={wagmiClient}>
+            <WagmiConfig client={client}>
+            
               <Component {...pageProps} />
+
+              
             </WagmiConfig>
           )}
-
-          <Web3Modal projectId={projectId} ethereumClient={ethereumClient} />
         </SetGlobalStateContext.Provider>
       </GlobalStateContext.Provider>
     </NotificationProvider>
