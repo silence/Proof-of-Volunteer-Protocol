@@ -16,7 +16,7 @@ const AllowedImageTypes = ['jpeg', 'png', 'gif','jpg'];
 import { useAccount, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import profileAbiJson from '@/mockprofileabi.json';
 import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
-
+import {Connected} from "@/components/connected"
 export default function Home() {
   /* local state variables to hold user's address and access token */
   const { address, isConnected } = useAccount()
@@ -90,7 +90,7 @@ export default function Home() {
 //     console.log('Error', error)
 //   }
 // });
-    
+  
   useEffect(()=>{
     if (write && form){
       console.log(imageURL)
@@ -142,7 +142,7 @@ export default function Home() {
         
         <Card>
 
-        <Web3Button />
+        <Connected />
             <Form onFinish={finishForm}>
             {/* <Form.Item name='Address' label='Ethereum Address' rules={[{ required: true }]}>
               <Input placeholder='Address' id="Address" type='text' />

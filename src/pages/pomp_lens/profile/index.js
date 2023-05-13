@@ -22,7 +22,7 @@ import Link from 'next/link';
 import {mainProfile, mainProfileAddress} from '../../../constants/index'
 import { Web3Button } from '@web3modal/react'
 import { useAccount, useContract,useSignTypedData } from 'wagmi'
-
+import {Connected} from "@/components/connected"
 
 // 0x7ebd
 export default function Home() {
@@ -151,7 +151,7 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        <Web3Button />
+        <Connected />
         {profile ? (
 
           

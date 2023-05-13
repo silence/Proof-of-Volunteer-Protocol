@@ -28,7 +28,7 @@ import {
 import { Web3Button, Web3NetworkSwitch } from '@web3modal/react';
 
 import { useAccount, useContract,useSignTypedData } from 'wagmi'
-
+import {Connected} from "@/components/connected"
 
 // 0x7ebd
 export default function Home() {
@@ -124,7 +124,7 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        <Web3Button/>
+        <Connected/>
         {profile ? (
           <div className="pt-20">
             <div className="flex flex-col justify-center items-center">

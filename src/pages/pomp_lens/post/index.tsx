@@ -22,7 +22,7 @@ import {
 import { Web3Button } from '@web3modal/react'
 import { useAccount, useContract,useSignTypedData } from 'wagmi'
 import { TypedDataDomain } from 'ethers';
-
+import {Connected} from "@/components/connected"
 
 
 const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
@@ -341,7 +341,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        <Web3Button />
+        <Connected />
         <Card style={{ width: '100%' }}>
           <Result
             icon={<SmileOutline />}
