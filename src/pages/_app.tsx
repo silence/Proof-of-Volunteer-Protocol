@@ -8,6 +8,8 @@ import { polygon, polygonMumbai } from 'wagmi/chains';
 import { GlobalState } from '@/types/global';
 import { GlobalStateContext, SetGlobalStateContext } from '@/hooks/globalContext';
 import { NotificationProvider } from '@web3uikit/core';
+import { ConfigProvider } from "antd-mobile";
+import enUS from 'antd-mobile/es/locales/en-US'
 
 
 const GLOBAL_STATE_KEY = 'GLOBAL_STATE_KEY';
@@ -87,19 +89,21 @@ export default function App({ Component, pageProps }: AppProps) {
   }, [globalState]);
 
   return (
-    <NotificationProvider>
-      <GlobalStateContext.Provider value={globalState}>
-        <SetGlobalStateContext.Provider value={setGlobalState}>
-          {ready && (
-            <WagmiConfig client={client}>
-            
-              <Component {...pageProps} />
-
+    <ConfigProvider locale={enUS}>
+      <NotificationProvider>
+        <GlobalStateContext.Provider value={globalState}>
+          <SetGlobalStateContext.Provider value={setGlobalState}>
+            {ready && (
+              <WagmiConfig client={client}>
               
-            </WagmiConfig>
-          )}
-        </SetGlobalStateContext.Provider>
-      </GlobalStateContext.Provider>
-    </NotificationProvider>
+                <Component {...pageProps} />
+
+                
+              </WagmiConfig>
+            )}
+          </SetGlobalStateContext.Provider>
+        </GlobalStateContext.Provider>
+      </NotificationProvider>
+    </ConfigProvider>
   );
 }
