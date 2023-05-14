@@ -346,7 +346,8 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
           <Result
             icon={<SmileOutline />}
             status="success"
-            title={"Thank you for joining " + EventName}
+            // title={"You two met at the " + EventName}
+            title={'Mint a POMP (Proof of Meet Protocol) SBT which will be stored permanently!'}
           />
 
           {Boolean(fileList?.length) ? (
