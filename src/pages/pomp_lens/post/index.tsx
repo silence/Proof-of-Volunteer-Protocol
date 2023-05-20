@@ -79,7 +79,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     //   }
 
     const metadata = {
-      appId: 'HelpAndGrow',
+      appId: 'HelpAndGrowCommunity',
       attributes: [
         {
           traitType: 'Meetup Time',
