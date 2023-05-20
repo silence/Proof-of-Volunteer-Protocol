@@ -121,12 +121,14 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
     };
     
     console.log(profile!.handle.split(".")[0]+":" + event.message);
-    const validateResult = await lensClient.publication.validateMetadata(metadata);
+    
+    ///// comment out validation logic here
+    // const validateResult = await lensClient.publication.validateMetadata(metadata);
 
-    if (!validateResult.valid) {
-      console.log(validateResult);
-      throw new Error(`Metadata is not valid.`);
-    }
+    // if (!validateResult.valid) {
+    //   console.log(validateResult);
+    //   throw new Error(`Metadata is not valid.`);
+    // }
     if (client) {
       const blob = new Blob([JSON.stringify(metadata)], { type: 'application/json' });
       const rootCid = await client?.put([new File([blob], 'lensMetaData.json')]);
