@@ -16,10 +16,12 @@ import {
    
     if (isConnected) {
       return (
-        <div>
-          <div>Connected to {connector!.name}</div>
-          <Button onClick={() => {disconnect()
+        <div style={{float:"right"}}>
+          <div>Connected to {connector?.name}</div>
+          <Button onClick={() => {
+           disconnect(); 
            router.push("/pomp_lens/login") 
+           
         }}>Disconnect</Button>
         </div>
       )

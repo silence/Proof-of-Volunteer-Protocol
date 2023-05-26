@@ -110,7 +110,7 @@ export default function Home() {
           <div style={{ textAlign: 'center', margin: '32px 0px' }}>
 
             {/* <Web3Button icon="show" label="Connect Wallet" balance="show"></Web3Button> */}
-          </div>
+            <WalletOptions/>
         {/* if the user has connected their wallet but has not yet authenticated, show them a login button */}
         {isConnected && !token && (
          <div>        
@@ -123,7 +123,8 @@ export default function Home() {
         )}
         {/* once the user has authenticated, show them a success message */}
         {address && token && <h2>Successfully signed in!</h2>}
-        <WalletOptions/>
+
+        </div>
       </div>
     </div>
   );

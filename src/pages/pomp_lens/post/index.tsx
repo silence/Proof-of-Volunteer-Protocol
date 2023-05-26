@@ -153,7 +153,7 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
         multirecipientFeeCollectModule: {
           amount: {
             currency: '0x2058A9D7613eEE744279e3856Ef0eAda5FCbaA7e',
-            value: '0.01'
+            value: '2'
           },
           recipients: [
             {
@@ -343,8 +343,9 @@ const TakePhotoPage: React.FC<TakePhotoPageProps> = () => {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        <Connected />
+        
         <Card style={{ width: '100%' }}>
+        <Connected />
           <Result
             icon={<SmileOutline />}
             status="success"

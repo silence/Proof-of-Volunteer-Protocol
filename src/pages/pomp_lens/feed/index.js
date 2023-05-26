@@ -103,7 +103,11 @@ export default function Home() {
   useEffect(() => {
     fetchPublications();
   }, [lensClient]); 
-
+  useEffect(()=>{
+    if (!isConnected){
+      router.push("/pomp_lens/login")
+    }
+  },[isConnected]);
   async function collectPublication(id){
     console.log("#######")
     console.log(id)
@@ -137,7 +141,9 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
-        
+        <Card>
+
+
         <Connected/>
         {profile ? (
           <div className="pt-20">
@@ -179,7 +185,7 @@ export default function Home() {
                   Profile
                 </Button>
           </Link>
-        
+          </Card>
         <div className="pt-20"></div>
       </div>
     </div>

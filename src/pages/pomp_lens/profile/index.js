@@ -66,7 +66,7 @@ export default function Home() {
   async function checkFollowing(){
     
     
-    if (address.toString().toLowerCase() == mainProfileAddress.toLowerCase()){
+    if (isConnected && address?.toString()?.toLowerCase() == mainProfileAddress.toLowerCase()){
       return
     }
        
@@ -115,10 +115,10 @@ export default function Home() {
     fetchPublications();
   }, [lensClient]); 
   useEffect(()=>{
-    if (address!==null && profile!=null ){
-        checkFollowing();
+    if (isConnected && profile!=null ){
+        // checkFollowing(); for presentation -- speed up the flow
     }
-  },[address,profile])
+  },[isConnected,profile])
   async function collectPublication(id){
 
       const typedDataResult = await lensClient.publication.createCollectTypedData({
@@ -150,6 +150,9 @@ export default function Home() {
   return (
     <div className={styles.app}>
       <div className={styles.body}>
+        <Card>
+
+        
         <Connected />
         {profile ? (
 
@@ -193,6 +196,7 @@ export default function Home() {
           <p>Loading Profile</p>
         )}
         <div className="pt-20"></div>
+      </Card>
       </div>
     </div>
   );

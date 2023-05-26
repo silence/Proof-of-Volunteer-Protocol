@@ -95,8 +95,12 @@ export default function App({ Component, pageProps }: AppProps) {
           <SetGlobalStateContext.Provider value={setGlobalState}>
             {ready && (
               <WagmiConfig client={client}>
-              
+                
                 <Component {...pageProps} />
+                
+                  
+                
+                
 
                 
               </WagmiConfig>
