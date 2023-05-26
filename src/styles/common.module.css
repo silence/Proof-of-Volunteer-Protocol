@@ -14,11 +14,24 @@
 }
 
 .body {
+  margin: auto;
   flex: 1;
   flex-wrap: wrap;
   display: flex;
   justify-content: center;
   align-items: center;
+
+  @media only screen and (max-width: 768px) {
+    width: 100%;
+  }
+
+  @media only screen and (min-width: 768px) and (max-width: 1200px) {
+    width: 60%;
+  }
+
+  @media only screen and (min-width: 1200px) {
+    width: 40%;
+  }
 }
 
 .bottom {

@@ -1,70 +1,74 @@
-import { createContext, useEffect, useState } from 'react';
-import { EthereumClient, modalConnectors, walletConnectProvider } from '@web3modal/ethereum';
-import { Web3Modal } from '@web3modal/react';
-import type { AppProps } from 'next/app';
-import '@/styles/globals.css';
-import { configureChains, createClient, WagmiConfig,useConnect,CreateClientConfig} from 'wagmi';
-import { polygon, polygonMumbai } from 'wagmi/chains';
-import { GlobalState } from '@/types/global';
-import { GlobalStateContext, SetGlobalStateContext } from '@/hooks/globalContext';
-import { NotificationProvider } from '@web3uikit/core';
+import { createContext, useEffect, useState } from "react";
+import type { AppProps } from "next/app";
+import "@/styles/globals.css";
+import {
+  configureChains,
+  createClient,
+  WagmiConfig,
+  useConnect,
+  CreateClientConfig
+} from "wagmi";
+import { polygonMumbai } from "wagmi/chains";
+import { GlobalState } from "@/types/global";
+import {
+  GlobalStateContext,
+  SetGlobalStateContext
+} from "@/hooks/globalContext";
+import { NotificationProvider } from "@web3uikit/core";
 import { ConfigProvider } from "antd-mobile";
-import enUS from 'antd-mobile/es/locales/en-US'
+import enUS from "antd-mobile/es/locales/en-US";
 
+const GLOBAL_STATE_KEY = "GLOBAL_STATE_KEY";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+import { InjectedConnector } from "wagmi/connectors/injected";
+import { MetaMaskConnector } from "wagmi/connectors/metaMask";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { alchemyProvider } from "wagmi/providers/alchemy";
+import { publicProvider } from "wagmi/providers/public";
+import { alchemyProviderKey } from "@/constants";
 
-const GLOBAL_STATE_KEY = 'GLOBAL_STATE_KEY';
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet'
-import { InjectedConnector } from 'wagmi/connectors/injected'
-import { MetaMaskConnector } from 'wagmi/connectors/metaMask'
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect'
-import { alchemyProvider } from 'wagmi/providers/alchemy'
-import { publicProvider } from 'wagmi/providers/public'
-import {alchemyProviderKey} from "@/constants"
 // 1. Get projectID at https://cloud.walletconnect.com
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
-  throw new Error('You need to provide NEXT_PUBLIC_PROJECT_ID env variable');
+  throw new Error("You need to provide NEXT_PUBLIC_PROJECT_ID env variable");
 }
 // https://dev.to/muratcanyuksel/connecting-to-different-web3-wallets-using-wagmish-and-reactjs-1ojp
 // wagmi only use 0.11
 const projectId = process.env.NEXT_PUBLIC_PROJECT_ID;
-
 
 // 2. Configure wagmi client
 
 // const { provider } = configureChains([polygonMumbai,polygon], [walletConnectProvider({ projectId })]);
 const { chains, provider, webSocketProvider } = configureChains(
   [polygonMumbai],
-  [alchemyProvider({ apiKey: alchemyProviderKey }), publicProvider()],
-)
-const client = createClient ({
+  [alchemyProvider({ apiKey: alchemyProviderKey }), publicProvider()]
+);
+const client = createClient({
   autoConnect: true,
   connectors: [
     new MetaMaskConnector({ chains }),
     new CoinbaseWalletConnector({
       chains,
       options: {
-        appName: 'wagmi',
-      },
+        appName: "wagmi"
+      }
     }),
     new WalletConnectConnector({
       chains,
       options: {
         qrcode: true
-      },
+      }
     }),
     new InjectedConnector({
       chains,
       options: {
-        name: 'Injected',
-        shimDisconnect: true,
-      },
-    }),
+        name: "Injected",
+        shimDisconnect: true
+      }
+    })
   ],
   provider,
-  webSocketProvider,
-}
-)
-
+  webSocketProvider
+});
 
 // // 3. Configure modal ethereum client
 // const ethereumClient = new EthereumClient(wagmiClient, chains);
@@ -74,7 +78,7 @@ export default function App({ Component, pageProps }: AppProps) {
   const [ready, setReady] = useState(false);
   const [globalState, setGlobalState] = useState<GlobalState>(() => {
     try {
-      return JSON.parse(window.localStorage.getItem(GLOBAL_STATE_KEY) || '');
+      return JSON.parse(window.localStorage.getItem(GLOBAL_STATE_KEY) || "");
     } catch (e) {
       return {};
     }
@@ -95,14 +99,7 @@ export default function App({ Component, pageProps }: AppProps) {
           <SetGlobalStateContext.Provider value={setGlobalState}>
             {ready && (
               <WagmiConfig client={client}>
-                
                 <Component {...pageProps} />
-                
-                  
-                
-                
-
-                
               </WagmiConfig>
             )}
           </SetGlobalStateContext.Provider>
