@@ -12,7 +12,6 @@ import { formatBalance } from "../util";
 
 interface WalletState {
   accounts: any[];
-  balance: string;
   chainId: string;
 }
 
@@ -28,7 +27,6 @@ interface MetaMaskContextData {
 
 const disconnectedState: WalletState = {
   accounts: [],
-  balance: "",
   chainId: ""
 };
 
@@ -59,17 +57,17 @@ export const MetaMaskContextProvider = ({ children }: PropsWithChildren) => {
       return;
     }
 
-    const balance = formatBalance(
-      await window.ethereum.request({
-        method: "eth_getBalance",
-        params: [accounts[0], "latest"]
-      })
-    );
+    // const balance = formatBalance(
+    //   await window.ethereum.request({
+    //     method: "eth_getBalance",
+    //     params: [accounts[0], "latest"]
+    //   })
+    // );
     const chainId = await window.ethereum.request({
       method: "eth_chainId"
     });
 
-    setWallet({ accounts, balance, chainId });
+    setWallet({ accounts, chainId });
   }, []);
 
   const updateWalletAndAccounts = useCallback(
