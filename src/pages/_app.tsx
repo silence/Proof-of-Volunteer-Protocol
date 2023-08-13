@@ -26,6 +26,7 @@ import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
 import { alchemyProvider } from "wagmi/providers/alchemy";
 import { publicProvider } from "wagmi/providers/public";
 import { alchemyProviderKey } from "@/constants";
+import { MetaMaskContextProvider } from "@/hooks/useMetamask";
 
 // 1. Get projectID at https://cloud.walletconnect.com
 if (!process.env.NEXT_PUBLIC_PROJECT_ID) {
@@ -52,12 +53,12 @@ const client = createClient({
         appName: "wagmi"
       }
     }),
-    new WalletConnectConnector({
-      chains,
-      options: {
-        qrcode: true
-      }
-    }),
+    // new WalletConnectConnector({
+    //   chains,
+    //   options: {
+    //     qrcode: true
+    //   }
+    // }),
     new InjectedConnector({
       chains,
       options: {
@@ -95,15 +96,17 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <ConfigProvider locale={enUS}>
       <NotificationProvider>
-        <GlobalStateContext.Provider value={globalState}>
-          <SetGlobalStateContext.Provider value={setGlobalState}>
-            {ready && (
-              <WagmiConfig client={client}>
-                <Component {...pageProps} />
-              </WagmiConfig>
-            )}
-          </SetGlobalStateContext.Provider>
-        </GlobalStateContext.Provider>
+        <MetaMaskContextProvider>
+          <GlobalStateContext.Provider value={globalState}>
+            <SetGlobalStateContext.Provider value={setGlobalState}>
+              {ready && (
+                <WagmiConfig client={client}>
+                  <Component {...pageProps} />
+                </WagmiConfig>
+              )}
+            </SetGlobalStateContext.Provider>
+          </GlobalStateContext.Provider>
+        </MetaMaskContextProvider>
       </NotificationProvider>
     </ConfigProvider>
   );
