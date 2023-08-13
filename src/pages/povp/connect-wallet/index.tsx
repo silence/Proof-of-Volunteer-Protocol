@@ -3,12 +3,10 @@ import {
   Card,
   Result,
   Button,
-  Space,
-  Toast,
   Dialog,
   Form,
-  Input,
-  NoticeBar
+  NoticeBar,
+  Input
 } from "antd-mobile";
 import { SmileOutline } from "antd-mobile-icons";
 import styles from "@/styles/common.module.css";
@@ -19,17 +17,15 @@ import {
   useDisconnect,
   usePrepareContractWrite
 } from "wagmi";
-import { convertBase64, postData } from "@/util";
 import abiJson from "@/povp_abi.json";
-import { CONTRACT_ADDRESS } from "@/constants";
+// import { CONTRACT_ADDRESS } from "@/constants";
 import { useRouter } from "next/router";
 import { useGlobalState } from "@/hooks/globalContext";
 import { povp_Contract_Address, Web3StorageApi } from "@/constants";
 import { Web3Storage } from "web3.storage";
 import Web3 from "web3";
 import Image from "next/image";
-import { useMetaMask } from "@/hooks/useMetamask";
-import Link from "next/link";
+// import { useMetaMask } from "@/hooks/useMetamask";
 import { WalletOptions } from "@/components/walletoptions";
 export interface ConnectWalletPageProps {}
 
@@ -105,21 +101,23 @@ const getRawData = (imgUrl: string, email: string) => ({
 // };
 
 const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
-  const [imageUrl, setImageUrl] = useState<string>("");
+  // const [imageUrl, setImageUrl] = useState<string>("");
   // wagm connection
   const { isConnected: isWAGMConnected, status } = useAccount();
   const { disconnect } = useDisconnect();
   const router = useRouter();
-  const { ipfsImageUrl, email } = useGlobalState();
-  const { wallet, hasProvider, isConnecting, connectMetaMask } = useMetaMask();
+  const { recipient, ipfsImageUrl, email } = useGlobalState();
+
+  // metamask sdk
+  // const { wallet, hasProvider, isConnecting, connectMetaMask } = useMetaMask();
   // const [imageId] = useUploadImage({ imageObj: imageUrl, isConnected });
   const [walletAddress, setWalletAddress] = useState<string>();
   const [metaData, setmetaData] = useState<string>();
 
   const [client, setClient] = useState<Web3Storage>();
 
-  const isConnected =
-    isWAGMConnected || (hasProvider && wallet.accounts.length > 0);
+  const isConnected = isWAGMConnected;
+  // isWAGMConnected || (hasProvider && wallet.accounts.length > 0);
 
   useEffect(() => {
     setClient(new Web3Storage({ token: Web3StorageApi }));
@@ -206,7 +204,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
             title="Connect Wallet!"
           />
 
-          {!hasProvider && (
+          {/* {!hasProvider && (
             <Link href="https://metamask.io" target="_blank">
               Install MetaMask
             </Link>
@@ -215,7 +213,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = (props) => {
             <Button disabled={isConnecting} onClick={connectMetaMask}>
               Connect MetaMask
             </Button>
-          )}
+          )} */}
 
           {!isConnected && <WalletOptions />}
           <div
