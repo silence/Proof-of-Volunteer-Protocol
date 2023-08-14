@@ -10,7 +10,6 @@ import { useGlobalState } from "@/hooks/globalContext";
 import { povp_Contract_Address, Web3StorageApi } from "@/constants";
 import { Web3Storage } from "web3.storage";
 import Web3 from "web3";
-import Image from "next/image";
 export interface ConnectWalletPageProps {}
 
 const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
@@ -113,7 +112,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
             <Web3NetworkSwitch />
           </div>
 
-          {isConnected && (
+          {isConnected ? (
             <Button
               style={{ margin: "12px 0px" }}
               block
@@ -124,6 +123,8 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
             >
               Mint now
             </Button>
+          ) : (
+            <Button>Login With Lens</Button>
           )}
         </Card>
       </div>
