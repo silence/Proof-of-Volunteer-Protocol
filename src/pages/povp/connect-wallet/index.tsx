@@ -8,8 +8,21 @@ import abiJson from "@/povp_abi.json";
 import { useRouter } from "next/router";
 import { useGlobalState } from "@/hooks/globalContext";
 import { povp_Contract_Address, Web3StorageApi } from "@/constants";
+import LoginButton from "@/components/LoginButton";
 import { Web3Storage } from "web3.storage";
 import Web3 from "web3";
+import {
+  ContentFocus,
+  ReferencePolicyType,
+  useCreatePost,
+} from "@lens-protocol/react-web";
+import {
+  useActiveProfile,
+  useWalletLogin,
+  useFeed,
+} from "@lens-protocol/react-web";
+import uploadToIPFS from "@/utils.ts/uploadToIpfs";
+
 export interface ConnectWalletPageProps {}
 
 const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
@@ -18,8 +31,20 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
   const { ipfsImageUrl, email } = useGlobalState();
   const [walletAddress, setWalletAddress] = useState<string>();
   const [metaData, setmetaData] = useState<string>();
+  const { data: activeProfile, loading: profileLoading } = useActiveProfile();
+  const {
+    execute: create,
+    error,
+    isPending,
+  } = useCreatePost({
+    publisher: activeProfile!,
+    upload: async () => ipfsImageUrl!,
+  });
 
   const [client, setClient] = useState<Web3Storage>();
+
+  console.log("isConnected", isConnected);
+  console.log("activeProfile", activeProfile);
 
   useEffect(() => {
     setClient(new Web3Storage({ token: Web3StorageApi }));
@@ -34,15 +59,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
   const { isLoading, isSuccess, write } = useContractWrite(config);
 
   const handleMint = async () => {
-    var web3 = new Web3(Web3.givenProvider);
-    if (web3) {
-      var accounts = await web3.eth.getAccounts();
-      setWalletAddress(accounts[0]);
-      console.log(accounts[0]);
-    } else {
-      console.log("Please connect wallet");
-    }
-    var rawData = {
+    const metaData = {
       description: "Jerry Volunteered at Digital Literacy Help",
       external_url: "",
       image: ipfsImageUrl,
@@ -75,15 +92,13 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
         },
       ],
     };
-    if (client) {
-      const blob = new Blob([JSON.stringify(rawData)], {
-        type: "application/json",
-      });
-      const rootCid = await client?.put([new File([blob], "povpsbt.json")]);
-      console.log("mint now");
-      setmetaData(rootCid);
-      write?.();
-    }
+
+    await create({
+      content: JSON.stringify(metaData),
+      contentFocus: ContentFocus.TEXT,
+      locale: "en",
+      reference: { type: ReferencePolicyType.ANYONE },
+    });
   };
 
   useEffect(() => {
@@ -124,7 +139,7 @@ const ConnectWalletPage: React.FC<ConnectWalletPageProps> = () => {
               Mint now
             </Button>
           ) : (
-            <Button>Login With Lens</Button>
+            <LoginButton />
           )}
         </Card>
       </div>

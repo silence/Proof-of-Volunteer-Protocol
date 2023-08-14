@@ -14,7 +14,7 @@ import { SmileOutline } from "antd-mobile-icons";
 import styles from "@/styles/common.module.css";
 import { Web3Button, Web3NetworkSwitch } from "@web3modal/react";
 import { useAccount, useContractWrite, usePrepareContractWrite } from "wagmi";
-import { convertBase64, postData } from "@/util";
+import { convertBase64, postData } from "@/utils.ts/util";
 import abiJson from "@/abi.json";
 import { CONTRACT_ADDRESS } from "@/constants";
 import { useRouter } from "next/router";
