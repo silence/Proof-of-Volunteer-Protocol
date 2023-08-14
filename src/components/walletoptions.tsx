@@ -1,10 +1,20 @@
-import { useConnect } from 'wagmi'
-import { Card, Result, Button, Space, Toast, Dialog, Form, Input, NoticeBar } from 'antd-mobile';
+import { useConnect } from "wagmi";
+import {
+  Card,
+  Result,
+  Button,
+  Space,
+  Toast,
+  Dialog,
+  Form,
+  Input,
+  NoticeBar,
+} from "antd-mobile";
 
 export function WalletOptions() {
   const { connect, connectors, error, isLoading, pendingConnector } =
-    useConnect()
- 
+    useConnect();
+
   return (
     <Card>
       {connectors.map((connector) => (
@@ -14,14 +24,14 @@ export function WalletOptions() {
           onClick={() => connect({ connector })}
         >
           {connector.name}
-          {!connector.ready && ' (unsupported)'}
+          {!connector.ready && " (unsupported)"}
           {isLoading &&
             connector.id === pendingConnector?.id &&
-            ' (connecting)'}
+            " (connecting)"}
         </Button>
       ))}
- 
+
       {error && <div>{error.message}</div>}
     </Card>
-  )
+  );
 }
