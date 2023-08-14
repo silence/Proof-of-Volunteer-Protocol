@@ -29,8 +29,8 @@ export default function HomePage() {
    * 3. Any media url to be associated with this mint
    */
   const { config } = usePrepareContractWrite({
-    address: contract,
-    abi: abiJson,
+    addressOrName: contract,
+    contractInterface: abiJson,
     functionName: "mint",
     args: [addr, tokenId, "https://www.youtube.com/watch?v=3tGYbYZRqdY"],
   });
@@ -43,8 +43,8 @@ export default function HomePage() {
    * So when try to retrieve the URI you need to provide both the address and tokenId as argument.
    */
   const { data: tokenUriData } = useContractRead({
-    address: contract,
-    abi: abiJson,
+    addressOrName: contract,
+    contractInterface: abiJson,
     functionName: "_tokenURIs",
     args: [addr, tokenId],
   });
